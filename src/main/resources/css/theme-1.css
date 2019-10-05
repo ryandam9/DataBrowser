@@ -1,0 +1,382 @@
+* {
+    -fx-primary : #B4C1CC;
+    -fx-yellow: #FAAB1A;
+    -fx-light-gray: #B4C1CC;
+    -fx-dark-gray: #344955;
+    -fx-primary-text: WHITE;
+    -fx-black: #17262A;
+    -fx-light-pink: #FFF0E8;
+    -fx-dark-pink: #FEDBD0;
+    -fx-light-black: #424250;
+    -fx-dark-black: #373741;
+    -fx-light-green: #1EB980;
+    -fx-dark-green: #005D57;
+    -fx-green: #129622;
+    -fx-blue: #5264AE;
+    -fx-dark-blue: #2979FF;
+    -fx-pure-black: #000000;
+    -fx-google-blue: #065FD4;
+
+    -fx-light-white-gray: #F2F2F2;
+    -fx-dark-white-gray: #D9D9D9;
+    -fx-dark-green: #138496;
+    -fx-light-green: #D4EDDA;
+    -fx-light-white: #F0FFFF;
+
+    -fx-soumya-purple: #7D2996;
+
+    -fx-lib-primarytext : #B2B2B2;
+    -fx-lib-primary : #2A2E37;
+}
+
+.root{
+    -fx-background-color: -fx-light-white-gray;
+    -fx-text-fill: -fx-yellow;
+}
+
+.tile {
+    -fx-padding: 0.7em 0.57em;
+    -fx-font-size: 15px;
+    -fx-font-weight: normal;
+    -fx-background-color: white;
+    -fx-text-fill: -fx-dark-black;
+    -fx-pref-width: 200;
+    -fx-pref-height: 200;
+    -fx-font-smoothing-type: gray;
+    -fx-border-radius: 10 10 0 0;
+    -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 1.0, 1.0);
+    -fx-content-display: bottom;
+}
+
+.tile: hover {
+    -fx-text-fill: -fx-blue;
+    -fx-border-width: 0px 0px 5px 0px;
+    -fx-border-color: -fx-green;
+}
+
+.header {
+}
+
+.click-button {
+    -fx-padding: 0.7em 0.57em;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-background-color: -fx-google-blue;
+    -fx-pref-width: 120;
+    -fx-text-fill: white;
+    -fx-min-width: 120;
+    -fx-font-smoothing-type: gray;
+    -fx-border-radius: 10 10 0 0;
+    -fx-font-weight: bold;
+    /* -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 2.0, 2.0);*/
+}
+
+.click-button: hover {
+    -fx-background-color: -fx-soumya-purple;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.label-level-1 {
+    -fx-font-size: 50px;
+    -fx-text-fill: -fx-yellow;
+    -fx-font-family: "Monotype Corsiva";
+}
+
+.label-level-2 {
+    -fx-font-size: 15px;
+    -fx-text-fill: -fx-yellow;
+    -fx-font-weight: bold;
+}
+
+.label-level-2-black {
+    -fx-font-size: 15px;
+    -fx-text-fill: -fx-dark-black;
+    -fx-font-weight: normal;
+}
+
+.label-level-3 {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-dark-gray;
+    -fx-font-weight: bold;
+}
+
+.hbox-level-1 {
+    -fx-background-color: -fx-light-gray;
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+}
+
+.hbox-level-1-1 {
+    -fx-background-color: -fx-dark-gray;
+}
+
+.vbox {
+    -fx-background-color: -fx-light-gray;
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-dark-black;
+    -fx-font-weight: normal;
+}
+
+.error-message {
+/*
+    -fx-background-color: -fx-text-box-border, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background-radius: 0 ;*/
+    -fx-font-family: "consolas";
+    -fx-font-size: 10pt;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+
+.connection-box {
+    -fx-background-color: -fx-dark-black;
+    -fx-border-color: -fx-light-black;
+    -fx-border-width: 1px;
+    -fx-background-radius: 15.0;
+}
+
+.scroll-pane {
+    -fx-background-color: -fx-light-black;
+	-fx-border-color: -fx-light-black;
+    -fx-border-width: 1px;
+    -fx-background-radius: 15.0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-insets: 0;
+}
+
+/* To fill the area not occupied by Scroll Pane */
+.scroll-pane .viewport {
+  -fx-background-color: -fx-light-black;
+}
+
+.tile-pane {
+    -fx-background-color: -fx-dark-black;
+    -fx-border-color: -fx-light-black;
+    -fx-border-width: 1px;
+    -fx-background-radius: 15.0;
+}
+
+/* Text Box Class */
+.text-field {
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background-radius: 5;
+    -fx-font-family: "consolas";
+    -fx-font-size: 15px;
+    -fx-background-color: white;
+    -fx-text-fill: -fx-pure-black;
+}
+
+.text-field:focused {
+    -fx-background-color: -fx-dark-gray;
+    -fx-text-fill: -fx-yellow;
+}
+
+.status-bar {
+   -fx-background-color: -fx-dark-black;
+   -fx-text-fill: -fx-yellow;
+   -fx-font-size: 15px;
+   -fx-font-weight: normal;
+   -fx-font-family: "consolas";
+   -fx-border-color: -fx-dark-black;
+   -fx-border-width: 1px;
+   -fx-background-radius: 15.0;
+}
+
+.progress-indicator {
+    -fx-progress-color: -fx-green;
+    -fx-pref-width: 75;
+    -fx-pref-height: 75;
+}
+
+/*
+.radio-button .radio {
+    -fx-border-color: white;
+    -fx-background-color: -fx-green;
+    -fx-background-image: null;
+}
+.radio-button .radio:selected {
+    -fx-background-color: -fx-green;
+    -fx-background-image: null;
+}
+.radio-button -radio:armed {
+    -fx-background-color: -fx-green;
+    -fx-background-image: null;
+}
+.radio-button -radio:determinate {
+    -fx-background-color: -fx-green;
+    -fx-background-image: null;
+}
+.radio-button -radio:indeterminate {
+    -fx-background-color: -fx-green;
+    -fx-background-image: null;
+}
+.radio-button .dot {
+    -fx-background-radius: 5px;
+}
+*/
+
+.query-window {
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-font-family: "consolas";
+    -fx-font-size: 10pt;
+    -fx-background-color: -fx-light-white-gray;
+    -fx-text-fill: -fx-pure-black;
+}
+
+.query-results-window {
+   -fx-font-family: "consolas";
+   -fx-font-size: 10pt;
+}
+
+.tree-table-style {
+   -fx-font-family: "consolas";
+   -fx-font-size: 10pt;
+}
+
+.listview-style {
+   -fx-font-family: "consolas";
+   -fx-font-size: 10pt;
+}
+
+.tile-label {
+    -fx-font-family: "consolas";
+    -fx-font-smoothing-type: gray;
+    -fx-font-weight: normal;
+    -fx-text-fill: -fx-dark-green;
+    -fx-font-size : 12pt;
+    -fx-focus-color: -fx-primary-text;
+}
+
+.tile-box {
+    -fx-pref-width: 250;
+    -fx-pref-height: 250;
+    -fx-alignment: center;
+    -fx-padding: 10;
+    -fx-spacing: 30pt;
+    -fx-border-color: -fx-light-black;
+    -fx-border-width: 1px;
+    -fx-background-radius: 15.0;
+    -fx-background-color: -fx-dark-black;
+}
+
+.progress-indicator {
+    -fx-progress-color: -fx-google-blue;
+    -fx-pref-width: 55;
+    -fx-pref-height: 55;
+}
+
+.job-success {
+    -fx-background-color: -fx-green;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-success:hover {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-green;
+    -fx-font-weight: bold;
+}
+
+.job-failed {
+    -fx-background-color: -fx-red;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-failed:hover {
+    -fx-background-color: -fx-soumya-purple;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-running {
+    -fx-background-color: #0388fc;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.job-running:hover {
+    -fx-background-color: white;
+    -fx-text-fill: #0388fc;
+    -fx-font-weight: bold;
+}
+
+/* ListView styling */
+.list-cell:empty {
+    visibility:hidden;
+}
+
+.list-cell:even {
+    -fx-background-color: white;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+}
+
+/* Check Box Styling */
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color:grey;
+    -fx-border-radius:3px;
+}
+
+.check-box: hover {
+    -fx-text-fill: white;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #28a3f4;
+}
+
+.tree-table-style {
+   -fx-font-family: "consolas";
+   -fx-font-size: 10pt;
+}
+
+/*
+.table-row-cell:odd {
+        -fx-alignment: center-left;
+        -fx-text-alignment: left;
+        -fx-text-overrun:  leading-ellipsis;
+        -fx-wrap-text: true;
+        -fx-content-display: left;
+        -fx-font-family: "monospace";
+        -fx-font-size: 12pt;
+        -fx-font-weight: bold;
+        -fx-background-color: -fx-light-white-gray;
+        -fx-text-fill: -fx-dark-gray;
+}
+
+.table-row-cell:even {
+       -fx-alignment: center-left;
+        -fx-text-alignment: left;
+        -fx-text-overrun:  leading-ellipsis;
+        -fx-wrap-text: true;
+        -fx-content-display: left;
+        -fx-font-family: "monospace";
+        -fx-font-size: 12pt;
+        -fx-font-weight: bold;
+        -fx-background-color: -fx-dark-white-gray;
+        -fx-text-fill: -fx-pure-black;
+}
+*/
