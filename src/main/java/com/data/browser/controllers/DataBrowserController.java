@@ -337,10 +337,6 @@ public class DataBrowserController implements Initializable {
                 service.setDisable(true);
                 sid.setDisable(true);
                 port.setText("1433");
-
-                user.setText("ryand");
-                host.setText("DESKTOP-0NS7D55\\SQLEXPRESS");
-                port.setText("65203");
                 break;
 
             default:
