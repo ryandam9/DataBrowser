@@ -5,6 +5,7 @@ import com.data.browser.ui.RefreshQueryResultsTask;
 import com.dbutils.common.ColumnDetail;
 import com.dbutils.common.DBConnections;
 import com.dbutils.common.TableDetail;
+import com.dbutils.oracle.OracleMetadata;
 import com.dbutils.sqlserver.SqlServerMetadata;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
@@ -17,10 +18,14 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -152,41 +157,45 @@ public class DataBrowserController implements Initializable {
                         String db = selectedItem.getParent().getParent().getValue();
 
                         TableDetail searchEntry = new TableDetail(db, schema, table, "BASE TABLE");
-                        List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
-                        List<String> cols = new ArrayList<>();
 
-                        columns.forEach(columnDetail -> {
-                            cols.add(columnDetail.getColumn());
-                        });
+                        try {
+                            List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
+                            List<String> cols = new ArrayList<>();
 
-                        Collections.sort(cols, new Comparator<String>() {
-                            @Override
-                            public int compare(String o1, String o2) {
-                                return o1.toLowerCase().compareTo(o2.toLowerCase());
+                            columns.forEach(columnDetail -> {
+                                cols.add(columnDetail.getColumn());
+                            });
+
+                            Collections.sort(cols, new Comparator<String>() {
+                                @Override
+                                public int compare(String o1, String o2) {
+                                    return o1.toLowerCase().compareTo(o2.toLowerCase());
+                                }
+                            });
+
+                            ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
+
+                            if (columns != null) {
+                                for (String c : cols) {
+                                    CheckBox columnCheckBox = new CheckBox(c);
+                                    checkBoxes.add(columnCheckBox);
+                                }
                             }
-                        });
 
-                        ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
+                            listProperty = new SimpleListProperty<>();
+                            listProperty.set(checkBoxes);
+                            ListView<CheckBox> listView = new ListView<>();
+                            listView.itemsProperty().bind(listProperty);
+                            listView.prefHeightProperty().bind(columnsBox.heightProperty());
 
-                        if (columns != null) {
-                            for (String c : cols) {
-                                CheckBox columnCheckBox = new CheckBox(c);
-                                checkBoxes.add(columnCheckBox);
-                            }
+                            columnsBox.getChildren().clear();
+                            columnsBox.getChildren().add(listView);
+
+                            queryDB = db;
+                            querySchema = schema;
+                            queryTable = table;
+                        } catch (Exception ex) {
                         }
-
-                        listProperty = new SimpleListProperty<>();
-                        listProperty.set(checkBoxes);
-                        ListView<CheckBox> listView = new ListView<>();
-                        listView.itemsProperty().bind(listProperty);
-                        listView.prefHeightProperty().bind(columnsBox.heightProperty());
-
-                        columnsBox.getChildren().clear();
-                        columnsBox.getChildren().add(listView);
-
-                        queryDB = db;
-                        querySchema = schema;
-                        queryTable = table;
                     }
                 });
     }
@@ -257,10 +266,14 @@ public class DataBrowserController implements Initializable {
         selectPart.deleteCharAt(0);
 
         StringBuilder fromPart = new StringBuilder();
-        fromPart.append(" FROM ")
-                .append(queryDB)
-                .append(".")
-                .append(querySchema)
+        fromPart.append(" FROM ");
+
+        // For SQL Server, add the Database name while fetching data.
+        if (AppData.dbSelection.equals(AppData.SQL_SERVER))
+            fromPart.append(queryDB)
+                    .append(".");
+
+        fromPart.append(querySchema)
                 .append(".")
                 .append(queryTable);
 
@@ -371,7 +384,7 @@ public class DataBrowserController implements Initializable {
             logger.debug("DB Connection acquired.");
 
             connection = conn;
-            fetchSQLServerMetadata();
+            fetchDBMetadata();
             return conn;
         }
 
@@ -395,37 +408,50 @@ public class DataBrowserController implements Initializable {
         }
     }
 
-    private void fetchSQLServerMetadata() {
-        Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> tables;
+    private void fetchDBMetadata() {
+        Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> tables = new HashMap<>();
 
         try {
-            tables = SqlServerMetadata.getAllTables(connection);
+            switch (AppData.dbSelection) {
+                case AppData.ORACLE:
+                    tables = OracleMetadata.getAllTables(connection);
+                    break;
+
+                case AppData.SQL_SERVER:
+                    tables = SqlServerMetadata.getAllTables(connection);
+                    break;
+            }
+
             AppData.tables = tables;
             List<String> databaseNames = new ArrayList(tables.keySet());
 
-
             // Host name will be the Root of the tree.
-            TreeItem<String> rootNode = new TreeItem<String>(AppData.host);
+            Node serverIcon = new ImageView(new Image(new File("resources/images/" + "server.png").toURI().toURL().toString(), 16, 16, true, true));
+            TreeItem<String> rootNode = new TreeItem<String>(AppData.host, serverIcon);
             rootNode.setExpanded(true);
 
             // Add Database names.
-            databaseNames.forEach((String db) -> {
-                TreeItem<String> dbItem = new TreeItem<>(db);
+            Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> finalTables = tables;
+
+            for (String db : databaseNames) {
+                Node databaseIcon = new ImageView(new Image(new File("resources/images/" + "database.png").toURI().toURL().toString(), 16, 16, true, true));
+                TreeItem<String> dbItem = new TreeItem<>(db, databaseIcon);
                 dbItem.setExpanded(true);
 
-                for (String schema : tables.get(db).keySet()) {
+                for (String schema : finalTables.get(db).keySet()) {
                     TreeItem<String> schemaItem = new TreeItem<>(schema);
                     schemaItem.setExpanded(false);
 
-                    for (TableDetail table : tables.get(db).get(schema).keySet()) {
-                        TreeItem<String> tableItem = new TreeItem<>(table.getTable());
+                    for (TableDetail table : finalTables.get(db).get(schema).keySet()) {
+                        Node tableIcon = new ImageView(new Image(new File("resources/images/" + "table.png").toURI().toURL().toString(), 16, 16, true, true));
+                        TreeItem<String> tableItem = new TreeItem<>(table.getTable(), tableIcon);
                         schemaItem.getChildren().add(tableItem);
                     }
 
                     dbItem.getChildren().add(schemaItem);
                 }
                 rootNode.getChildren().add(dbItem);
-            });
+            }
 
             Platform.runLater(() -> objectBrowser.setRoot(rootNode));
         } catch (Exception ex) {

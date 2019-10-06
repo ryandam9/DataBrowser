@@ -3,7 +3,7 @@
     -fx-yellow: #FAAB1A;
     -fx-light-gray: #B4C1CC;
     -fx-dark-gray: #344955;
-    -fx-primary-text: WHITE;
+    -fx-white: #FEFEFE;
     -fx-black: #17262A;
     -fx-light-pink: #FFF0E8;
     -fx-dark-pink: #FEDBD0;
@@ -27,6 +27,7 @@
 
     -fx-lib-primarytext : #B2B2B2;
     -fx-lib-primary : #2A2E37;
+    -fx-gray-on-white: #767676;
 }
 
 .root{
@@ -125,7 +126,7 @@
     -fx-background-radius: 0 ;*/
     -fx-font-family: "consolas";
     -fx-font-size: 10pt;
-    -fx-text-fill: red;
+    -fx-text-fill: -fx-dark-gray;
     -fx-font-weight: bold;
 }
 
@@ -378,6 +379,8 @@
 .table-view .column-header,
 .table-view .column-header-background .filler {
     -fx-background-color: -fx-dark-gray;
+    -fx-border-color: white;
+    -fx-border-width: 0 2 0 0;
 }
 
 .table-view .column-header .label{
@@ -435,4 +438,52 @@
 .table-view:focused .table-row-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color;
 }
+
+
+.table-row-cell:odd {
+        -fx-font-family: "monospace";
+        -fx-background-color: #e1e6eb;
+        -fx-text-fill: -fx-black;
+        -fx-font-weight: bold;
+        -fx-font-size: 11pt;
+}
+
+.table-row-cell:even {
+        -fx-font-family: "monospace";
+        -fx-background-color: -fx-white;
+        -fx-text-fill: -fx-gray-on-white;
+        -fx-font-weight: bold;
+        -fx-font-size: 11pt;
+}
 */
+
+/* overwrite default row style */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+/* apply row style to cells instead */
+.table-row-cell .table-cell {
+    -fx-background-color: -fx-table-cell-border-color, -fx-background;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-font-family: "monospace";
+    -fx-font-weight: bold;
+    -fx-font-size: 11pt;
+}
+
+.table-row-cell:odd {
+    -fx-background: -fx-control-inner-background-alt;
+}
+
+/* fix markup for selected cells/cells in a selected row */
+.table-row-cell:filled > .table-cell:selected,
+.table-row-cell:filled:selected > .table-cell {
+    -fx-background: -fx-selection-bar-non-focused;
+    -fx-table-cell-border-color: derive(-fx-background, 20%);
+}
+
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected .table-cell,
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected {
+    -fx-background: -fx-selection-bar;
+}
