@@ -134,8 +134,7 @@ public class DataBrowserController implements Initializable {
         progressIndicator.setVisible(false);
         progressBox.getChildren().add(progressIndicator);
 
-//        VBox.setVgrow(columnsBox, Priority.ALWAYS);
-//        columnsBox.prefHeightProperty().bind(anchorPane1.heightProperty());
+        recordsToFetch.setText("10000");
 
         // Only one entry can be selected at a time
         objectBrowser.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -257,34 +256,42 @@ public class DataBrowserController implements Initializable {
     private void fetchData(ActionEvent event) {
         StringBuilder selectPart = new StringBuilder();
 
+        // Produces comma separated list of column names to be fetched.
         listProperty.forEach((checkBox -> {
             if (checkBox.isSelected())
                 selectPart.append(",")
                         .append(checkBox.getText());
         }));
 
+        // Remove the first ","
         selectPart.deleteCharAt(0);
 
         StringBuilder fromPart = new StringBuilder();
         fromPart.append(" FROM ");
 
         // For SQL Server, add the Database name while fetching data.
-        if (AppData.dbSelection.equals(AppData.SQL_SERVER))
+        if (AppData.dbSelection.equals(AppData.SQL_SERVER)) {
             fromPart.append(queryDB)
                     .append(".");
+
+            selectPart.insert(0, " TOP " + recordsToFetch.getText() + " ");
+        }
 
         fromPart.append(querySchema)
                 .append(".")
                 .append(queryTable);
 
         StringBuilder predicates = new StringBuilder();
-
         String query;
 
         if (isUniqueValuesChecked.isSelected())
             query = "SELECT DISTINCT" + " " + selectPart + " " + fromPart;
         else
             query = "SELECT  " + selectPart + " " + fromPart;
+
+        // For Oracle
+        if (AppData.dbSelection.equals(AppData.ORACLE))
+            query = query + " " + "WHERE ROWNUM < " + recordsToFetch.getText() + " ";
 
         System.out.println(query);
 

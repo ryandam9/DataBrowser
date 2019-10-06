@@ -102,9 +102,9 @@
                     <children>
                         <SplitPane dividerPositions="0.4211261051651931" prefHeight="743.2" prefWidth="861.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0">
+                                <AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: #B4C1CC;">
                                     <children>
-                                        <VBox fx:id="columnsBox" layoutX="80.0" layoutY="158.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <VBox fx:id="columnsBox" layoutX="80.0" layoutY="158.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="columns-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>

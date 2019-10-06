@@ -35,11 +35,11 @@
     -fx-text-fill: -fx-yellow;
 }
 
-.tile {
+.columns-box {
     -fx-padding: 0.7em 0.57em;
-    -fx-font-size: 15px;
+    -fx-font-size: 12px;
     -fx-font-weight: normal;
-    -fx-background-color: white;
+    -fx-background-color: -fx-light-gray;
     -fx-text-fill: -fx-dark-black;
     -fx-pref-width: 200;
     -fx-pref-height: 200;
@@ -47,6 +47,13 @@
     -fx-border-radius: 10 10 0 0;
     -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 1.0, 1.0);
     -fx-content-display: bottom;
+}
+
+.vbox {
+    -fx-background-color: -fx-light-gray;
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-dark-black;
+    -fx-font-weight: normal;
 }
 
 .tile: hover {
@@ -110,13 +117,6 @@
 
 .hbox-level-1-1 {
     -fx-background-color: -fx-dark-gray;
-}
-
-.vbox {
-    -fx-background-color: -fx-light-gray;
-    -fx-font-size: 12px;
-    -fx-text-fill: -fx-dark-black;
-    -fx-font-weight: normal;
 }
 
 .error-message {
