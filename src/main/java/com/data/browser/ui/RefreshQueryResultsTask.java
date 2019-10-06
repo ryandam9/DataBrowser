@@ -1,5 +1,6 @@
 package com.data.browser.ui;
 
+import com.data.browser.Utils;
 import com.dbutils.common.DBConnections;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,10 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 
 import java.sql.Connection;
@@ -49,7 +47,8 @@ public class RefreshQueryResultsTask extends Task<Long> {
             // Setup Header
             for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
                 final int j = i;
-                TableColumn col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
+                TableColumn col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1).toUpperCase());
+//                col.setPrefWidth(Control.USE_COMPUTED_SIZE);
 
                 col.setCellValueFactory(
                         new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
@@ -77,6 +76,7 @@ public class RefreshQueryResultsTask extends Task<Long> {
 
             // Set Table View with data
             Platform.runLater(() -> resultsView.setItems(queryResultData));
+            Platform.runLater(() -> Utils.autoResizeColumns(resultsView));
         } catch (Exception e) {
             logStackTrace(e);
         }

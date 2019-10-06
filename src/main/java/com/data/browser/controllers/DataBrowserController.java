@@ -19,10 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.Glyph;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -172,7 +169,7 @@ public class DataBrowserController implements Initializable {
                         ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
 
                         if (columns != null) {
-                            for (String c: cols) {
+                            for (String c : cols) {
                                 CheckBox columnCheckBox = new CheckBox(c);
                                 checkBoxes.add(columnCheckBox);
                             }
@@ -254,7 +251,7 @@ public class DataBrowserController implements Initializable {
         listProperty.forEach((checkBox -> {
             if (checkBox.isSelected())
                 selectPart.append(",")
-                .append(checkBox.getText());
+                        .append(checkBox.getText());
         }));
 
         selectPart.deleteCharAt(0);
@@ -353,7 +350,15 @@ public class DataBrowserController implements Initializable {
             Connection conn = null;
 
             try {
-                conn = DBConnections.getSqlServerConnection(AppData.user, AppData.host, AppData.port);
+                switch (AppData.dbSelection) {
+                    case AppData.ORACLE:
+                        conn = DBConnections.getOracleConnection(AppData.user, AppData.password, AppData.host, AppData.service, AppData.port);
+                        break;
+
+                    case AppData.SQL_SERVER:
+                        conn = DBConnections.getSqlServerConnection(AppData.user, AppData.host, AppData.port);
+                        break;
+                }
             } catch (Exception e) {
                 final String errorMessage = "Unable to connect to the DB using " + AppData.user + ";" + e.getMessage();
                 Platform.runLater(() -> message.setText(errorMessage));
@@ -397,7 +402,6 @@ public class DataBrowserController implements Initializable {
             tables = SqlServerMetadata.getAllTables(connection);
             AppData.tables = tables;
             List<String> databaseNames = new ArrayList(tables.keySet());
-
 
 
             // Host name will be the Root of the tree.

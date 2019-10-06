@@ -353,7 +353,28 @@
    -fx-font-size: 10pt;
 }
 
-/*
+/* scroll bar starts here */
+/* The increment and decrement button CSS class of scrollbar */
+.table-view .increment-button ,.table-view .decrement-button {
+    -fx-background-color:transparent;
+	-fx-background-radius: 2em;
+}
+
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:vertical .track{
+	-fx-background-color: transparent;
+	-fx-border-color: -fx-dark-gray;
+	-fx-background-radius: 2em;
+	-fx-border-radius:2em;
+}
+
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-dark-gray;
+	-fx-background-insets: 2, 0, 0;
+	-fx-background-radius: 2em;
+}
+
 .table-view .column-header,
 .table-view .column-header-background .filler {
     -fx-background-color: -fx-dark-gray;
@@ -365,6 +386,7 @@
    -fx-alignment: CENTER;
 }
 
+/*
 .table-view .cell{
   -fx-alignment: center-left;
   -fx-background-color: -fx-light-gray;
@@ -376,33 +398,6 @@
    -fx-background-color: whitesmoke;
    -fx-text-background-color:  #6622CC;
 }
-
-/* scroll bar starts here */
-/* The increment and decrement button CSS class of scrollbar */
-
-/*
-.table-view .increment-button ,.table-view .decrement-button {
-    -fx-background-color:transparent;
-	-fx-background-radius: 2em;
-
-}
-
-.table-view .scroll-bar:horizontal .track,
-.table-view .scroll-bar:vertical .track{
-	-fx-background-color: transparent;
-	-fx-border-color:derive( #6622CC,80%);
-	-fx-background-radius: 2em;
-	-fx-border-radius:2em;
-}
-
-.table-view .scroll-bar:horizontal .thumb,
-.table-view .scroll-bar:vertical .thumb {
-    -fx-background-color:derive( #6622CC,90%);
-	-fx-background-insets: 2, 0, 0;
-	-fx-background-radius: 2em;
-}
-
-*/
 
 .table-view {
     -fx-base: #1d1d1d;
@@ -440,3 +435,4 @@
 .table-view:focused .table-row-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color;
 }
+*/
