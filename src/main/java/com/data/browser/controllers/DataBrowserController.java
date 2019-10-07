@@ -384,6 +384,8 @@ public class DataBrowserController implements Initializable {
 
             Platform.runLater(() -> message.setText("Database Connection acquired ! now, fetching DB metadata !"));
             Platform.runLater(() -> connectBtn.setDisable(true));
+            Platform.runLater(() -> password.setText(""));
+
             logger.debug("DB Connection acquired.");
 
             connection = conn;
