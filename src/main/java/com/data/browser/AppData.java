@@ -20,6 +20,7 @@ public class AppData {
     public static String service;
     public static String port;
     public static Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> tables;
+    public static Map<String, List<String>> schemas;
 
     // Constants
     public static final String ORACLE = "Oracle";

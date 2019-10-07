@@ -2,6 +2,7 @@ package com.data.browser.controllers;
 
 import com.data.browser.AppData;
 import com.data.browser.ui.RefreshQueryResultsTask;
+import com.data.browser.ui.TreeViewEntry;
 import com.dbutils.common.ColumnDetail;
 import com.dbutils.common.DBConnections;
 import com.dbutils.common.TableDetail;
@@ -414,45 +415,39 @@ public class DataBrowserController implements Initializable {
     }
 
     private void fetchDBMetadata() {
-        Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> tables = new HashMap<>();
+        Map<String, List<String>> schemas = new HashMap<>();
 
         try {
             switch (AppData.dbSelection) {
                 case AppData.ORACLE:
-                    tables = OracleMetadata.getAllTables(connection);
+                    schemas = OracleMetadata.getAllSchemas(connection);
                     break;
 
                 case AppData.SQL_SERVER:
-                    tables = SqlServerMetadata.getAllTables(connection);
+                    schemas = SqlServerMetadata.getAllSchemas(connection);
                     break;
             }
 
-            AppData.tables = tables;
-            List<String> databaseNames = new ArrayList(tables.keySet());
+            AppData.schemas = schemas;
+            List<String> databaseNames = new ArrayList(schemas.keySet());
 
             // Host name will be the Root of the tree.
             Node serverIcon = new ImageView(new Image(new File("resources/images/" + "server.png").toURI().toURL().toString(), 16, 16, true, true));
-            TreeItem<String> rootNode = new TreeItem<String>(AppData.host, serverIcon);
+            TreeViewEntry rootNode = new TreeViewEntry("Root", null, AppData.host, serverIcon);
             rootNode.setExpanded(true);
 
             // Add Database names.
-            Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> finalTables = tables;
+            Map<String, List<String>> finalSchemas = schemas;
 
             for (String db : databaseNames) {
                 Node databaseIcon = new ImageView(new Image(new File("resources/images/" + "database.png").toURI().toURL().toString(), 16, 16, true, true));
-                TreeItem<String> dbItem = new TreeItem<>(db, databaseIcon);
+                TreeViewEntry dbItem = new TreeViewEntry("database", AppData.host, db, databaseIcon);
                 dbItem.setExpanded(true);
 
-                for (String schema : finalTables.get(db).keySet()) {
-                    TreeItem<String> schemaItem = new TreeItem<>(schema);
-                    schemaItem.setExpanded(false);
-
-                    for (TableDetail table : finalTables.get(db).get(schema).keySet()) {
-                        Node tableIcon = new ImageView(new Image(new File("resources/images/" + "table.png").toURI().toURL().toString(), 16, 16, true, true));
-                        TreeItem<String> tableItem = new TreeItem<>(table.getTable(), tableIcon);
-                        schemaItem.getChildren().add(tableItem);
-                    }
-
+                for (String schema : finalSchemas.get(db)) {
+                    Node schemaIcon = new ImageView(new Image(new File("resources/images/" + "schema.png").toURI().toURL().toString(), 16, 16, true, true));
+                    TreeViewEntry schemaItem = new TreeViewEntry("schema", db, schema, schemaIcon);
+                    schemaItem.setExpanded(true);
                     dbItem.getChildren().add(schemaItem);
                 }
                 rootNode.getChildren().add(dbItem);
