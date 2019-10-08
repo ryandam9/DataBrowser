@@ -6,7 +6,6 @@ import com.data.browser.ui.TreeViewEntry;
 import com.dbutils.common.ColumnDetail;
 import com.dbutils.common.DBConnections;
 import com.dbutils.common.TableDetail;
-import com.dbutils.oracle.OracleMetadata;
 import com.dbutils.sqlserver.SqlServerMetadata;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
@@ -27,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -144,57 +144,87 @@ public class DataBrowserController implements Initializable {
         // Check box.
         objectBrowser.getSelectionModel()
                 .selectedItemProperty()
-                .addListener(new ChangeListener<TreeItem<String>>() {
+                .addListener(new ChangeListener<TreeViewEntry<String>>() {
                     @Override
                     public void changed(
-                            ObservableValue<? extends TreeItem<String>> observable,
-                            TreeItem<String> old_val,
-                            TreeItem<String> new_val) {
+                            ObservableValue<? extends TreeViewEntry<String>> observable,
+                            TreeViewEntry<String> old_val,
+                            TreeViewEntry<String> new_val) {
 
-                        TreeItem<String> selectedItem = new_val;
-                        String table = selectedItem.getValue();
-                        String schema = selectedItem.getParent().getValue();
-                        String db = selectedItem.getParent().getParent().getValue();
+                        String db = null;
+                        String schema = null;
+                        String table = null;
 
-                        TableDetail searchEntry = new TableDetail(db, schema, table, "BASE TABLE");
+                        TreeViewEntry<String> selectedItem = new_val;
 
-                        try {
-                            List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
-                            List<String> cols = new ArrayList<>();
+                        String type = selectedItem.getType();
+                        String parentItem =  selectedItem.getParentItem();
 
-                            columns.forEach(columnDetail -> {
-                                cols.add(columnDetail.getColumn());
-                            });
+                        switch (type) {
+                            case "root":
+                                break;
 
-                            Collections.sort(cols, new Comparator<String>() {
-                                @Override
-                                public int compare(String o1, String o2) {
-                                    return o1.toLowerCase().compareTo(o2.toLowerCase());
+                            case "database":
+                                break;
+
+                            case "schema":
+                                db = selectedItem.getParentItem();
+                                schema = selectedItem.getValue();
+
+                                // If the schema already has children, don't fetch tables again.
+                                if (selectedItem.getChildren().size() > 0)
+                                    return;
+
+                                Thread t = new Thread(new FetchTableMetadataTask(db, schema, selectedItem));
+                                t.start();
+                                break;
+
+                            case "table":
+                                db = selectedItem.getParent().getParent().getValue();
+                                schema = selectedItem.getParentItem();
+                                table = selectedItem.getValue();
+
+                                TableDetail searchEntry = new TableDetail(db, schema, table, "BASE TABLE");
+
+                                try {
+                                    List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
+                                    List<String> cols = new ArrayList<>();
+
+                                    columns.forEach(columnDetail -> {
+                                        cols.add(columnDetail.getColumn());
+                                    });
+
+                                    Collections.sort(cols, new Comparator<String>() {
+                                        @Override
+                                        public int compare(String o1, String o2) {
+                                            return o1.toLowerCase().compareTo(o2.toLowerCase());
+                                        }
+                                    });
+
+                                    ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
+
+                                    if (columns != null) {
+                                        for (String c : cols) {
+                                            CheckBox columnCheckBox = new CheckBox(c);
+                                            checkBoxes.add(columnCheckBox);
+                                        }
+                                    }
+
+                                    listProperty = new SimpleListProperty<>();
+                                    listProperty.set(checkBoxes);
+                                    ListView<CheckBox> listView = new ListView<>();
+                                    listView.itemsProperty().bind(listProperty);
+                                    listView.prefHeightProperty().bind(columnsBox.heightProperty());
+
+                                    columnsBox.getChildren().clear();
+                                    columnsBox.getChildren().add(listView);
+
+                                    queryDB = db;
+                                    querySchema = schema;
+                                    queryTable = table;
+                                } catch (Exception ex) {
                                 }
-                            });
-
-                            ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
-
-                            if (columns != null) {
-                                for (String c : cols) {
-                                    CheckBox columnCheckBox = new CheckBox(c);
-                                    checkBoxes.add(columnCheckBox);
-                                }
-                            }
-
-                            listProperty = new SimpleListProperty<>();
-                            listProperty.set(checkBoxes);
-                            ListView<CheckBox> listView = new ListView<>();
-                            listView.itemsProperty().bind(listProperty);
-                            listView.prefHeightProperty().bind(columnsBox.heightProperty());
-
-                            columnsBox.getChildren().clear();
-                            columnsBox.getChildren().add(listView);
-
-                            queryDB = db;
-                            querySchema = schema;
-                            queryTable = table;
-                        } catch (Exception ex) {
+                                break;
                         }
                     }
                 });
@@ -415,36 +445,58 @@ public class DataBrowserController implements Initializable {
     }
 
     private void fetchDBMetadata() {
-        Map<String, List<String>> schemas = new HashMap<>();
+        List<String> databases = new ArrayList<>();
+        List<String> schemas = new ArrayList<>();
+
+        Map<String, List<String>> dbSchemas = new HashMap<>();
+
+        switch (AppData.dbSelection) {
+            case AppData.ORACLE:
+                break;
+
+            case AppData.SQL_SERVER:
+                // First get all Database names
+                try {
+                    databases = SqlServerMetadata.getAllDatabases(connection);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                // For each DB, fetch the Schemas.
+                for (String db : databases) {
+                    try {
+                        // Update application level dictionary for later use
+                        AppData.tables.put (db, new HashMap<>());
+
+                        schemas = SqlServerMetadata.getAllSchemas(connection, db);
+                        dbSchemas.put(db, schemas);
+
+                        // Update the application level dictionary with all the Schemas.
+                        for(String schema: schemas) {
+                            AppData.tables.get(db).put(schema, new HashMap<>());
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                break;
+        }
 
         try {
-            switch (AppData.dbSelection) {
-                case AppData.ORACLE:
-                    schemas = OracleMetadata.getAllSchemas(connection);
-                    break;
-
-                case AppData.SQL_SERVER:
-                    schemas = SqlServerMetadata.getAllSchemas(connection);
-                    break;
-            }
-
-            AppData.schemas = schemas;
-            List<String> databaseNames = new ArrayList(schemas.keySet());
-
             // Host name will be the Root of the tree.
             Node serverIcon = new ImageView(new Image(new File("resources/images/" + "server.png").toURI().toURL().toString(), 16, 16, true, true));
-            TreeViewEntry rootNode = new TreeViewEntry("Root", null, AppData.host, serverIcon);
+            TreeViewEntry rootNode = new TreeViewEntry("root", null, AppData.host, serverIcon);
             rootNode.setExpanded(true);
 
-            // Add Database names.
-            Map<String, List<String>> finalSchemas = schemas;
+            List<String> sortedDBs = new ArrayList<>(dbSchemas.keySet());
+            Collections.sort(sortedDBs);
 
-            for (String db : databaseNames) {
+            for (String db : sortedDBs) {
                 Node databaseIcon = new ImageView(new Image(new File("resources/images/" + "database.png").toURI().toURL().toString(), 16, 16, true, true));
                 TreeViewEntry dbItem = new TreeViewEntry("database", AppData.host, db, databaseIcon);
                 dbItem.setExpanded(true);
 
-                for (String schema : finalSchemas.get(db)) {
+                for (String schema : dbSchemas.get(db)) {
                     Node schemaIcon = new ImageView(new Image(new File("resources/images/" + "schema.png").toURI().toURL().toString(), 16, 16, true, true));
                     TreeViewEntry schemaItem = new TreeViewEntry("schema", db, schema, schemaIcon);
                     schemaItem.setExpanded(true);
@@ -452,10 +504,69 @@ public class DataBrowserController implements Initializable {
                 }
                 rootNode.getChildren().add(dbItem);
             }
-
             Platform.runLater(() -> objectBrowser.setRoot(rootNode));
-        } catch (Exception ex) {
+        } catch (MalformedURLException ex) {
             logStackTrace(ex);
+        }
+    }
+
+    class FetchTableMetadataTask extends Task<Integer> {
+        private String db;
+        private String schema;
+        private TreeViewEntry parent;
+
+        private FetchTableMetadataTask(String db, String schema, TreeViewEntry parent) {
+            this.db = db;
+            this.schema = schema;
+            this.parent = parent;
+        }
+
+        @Override
+        protected Integer call() throws Exception {
+            Platform.runLater(() -> progressIndicator.setVisible(true));
+            Map<TableDetail, List<ColumnDetail>> tables = new HashMap<>();
+            int tableCount = 0;
+
+            switch (AppData.dbSelection) {
+                case AppData.ORACLE:
+                    break;
+
+                case AppData.SQL_SERVER:
+                    tables = SqlServerMetadata.getAllTables(connection, db, schema);
+                    break;
+            }
+
+            ObservableList<TreeViewEntry<String>> tablesInThisSchema = FXCollections.observableArrayList();
+
+            // To Sort table names
+            List<TableDetail> unorderedTables = new ArrayList<>(tables.keySet());
+            Collections.sort(unorderedTables, new Comparator<TableDetail>() {
+                                        @Override
+                                        public int compare(TableDetail o1, TableDetail o2) {
+                                            return o1.getTable().toLowerCase().compareTo(o2.getTable().toLowerCase());
+                                        }
+                                    });
+
+            for(TableDetail tableDetail: unorderedTables) {
+                Node tableIcon = new ImageView(new Image(new File("resources/images/" + "table.png").toURI().toURL().toString(), 16, 16, true, true));
+                TreeViewEntry tableItem = new TreeViewEntry("table", schema, tableDetail.getTable(), tableIcon);
+                tablesInThisSchema.add(tableItem);
+                tableCount++;
+
+                // Update the App level Dictionary
+                AppData.tables.get(db).get(schema).put(tableDetail, tables.get(tableDetail));
+
+                logger.debug(AppData.tables.get(db).get(schema).get(tableDetail));
+            }
+
+            Platform.runLater(() -> parent.getChildren().addAll(tablesInThisSchema));
+            return tableCount;
+        }
+
+        @Override
+        protected void done() {
+            super.done();
+            Platform.runLater(() -> progressIndicator.setVisible(false));
         }
     }
 }
