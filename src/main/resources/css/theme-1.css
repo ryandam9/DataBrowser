@@ -227,15 +227,44 @@
 .radio-button .dot {
     -fx-background-radius: 5px;
 }
-*/
 
 .query-window {
-    -fx-background-insets: 0, 0 0 1 0 ;
-    -fx-font-family: "consolas";
-    -fx-font-size: 10pt;
+    -fx-background-insets: 0, 0 0 0 0 ;
     -fx-background-color: -fx-light-white-gray;
     -fx-text-fill: -fx-pure-black;
+    -fx-font-family: "consolas";
+    -fx-font-size: 10pt;
+    -fx-border-color: -fx-dark-white-gray;
+    -fx-border-width: 0px;
+    -fx-background-radius: 15.0;
 }
+*/
+
+.text-area {
+    -fx-font-family: "consolas";
+    -fx-font-size: 10pt;
+    -fx-background-insets: 0;
+    -fx-background-color: #fff, #fff;
+}
+
+.text-area .content {
+    -fx-background-color: #fff;
+}
+
+.text-area:focused .content {
+    -fx-background-color: #fff;
+}
+
+.text-area:focused {
+    -fx-highlight-fill: #7ecfff;
+}
+
+.text-area .content {
+    -fx-padding: 10px;
+    -fx-text-fill: gray;
+    -fx-highlight-fill: #7ecfff;
+}
+
 
 .query-results-window {
    -fx-font-family: "consolas";

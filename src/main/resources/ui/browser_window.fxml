@@ -69,24 +69,17 @@
                     </children>
                 </VBox>
                 <Separator orientation="VERTICAL" prefHeight="200.0" />
-                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="400.0">
-                    <children>
-                        <Label fx:id="message" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="400.0" styleClass="error-message" wrapText="true" VBox.vgrow="ALWAYS">
-                            <font>
-                                <Font size="10.0" />
-                            </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                        </Label>
-                    </children>
+            <HBox HBox.hgrow="NEVER">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
-                </VBox>
+               <children>
+                  <Label fx:id="message" alignment="TOP_LEFT" maxWidth="800.0" prefHeight="120.0" prefWidth="800.0" styleClass="error-message" wrapText="true" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
             </children>
         </HBox>
     </top>
@@ -102,7 +95,7 @@
                     <children>
                         <SplitPane dividerPositions="0.4211261051651931" prefHeight="743.2" prefWidth="861.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane fx:id="anchorPane1" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: white;">
+                                <AnchorPane fx:id="anchorPane1" maxWidth="350.0" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: white;">
                                     <children>
                                         <VBox fx:id="columnsBox" layoutX="80.0" layoutY="158.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="columns-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <padding>
@@ -110,11 +103,17 @@
                                             </padding>
                                         </VBox>
                                     </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="742.0" prefWidth="245.0">
                                     <children>
                                         <TableView fx:id="queryResult" layoutX="66.0" layoutY="87.0" prefHeight="614.4" prefWidth="495.2" style="-fx-background-color: #B4C1CC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
                                 </AnchorPane>
                             </items>
                         </SplitPane>
@@ -191,6 +190,9 @@
                 </VBox>
                 <Separator orientation="VERTICAL" prefHeight="200.0" />
             </children>
+         <BorderPane.margin>
+            <Insets top="5.0" />
+         </BorderPane.margin>
         </HBox>
     </bottom>
     <padding>

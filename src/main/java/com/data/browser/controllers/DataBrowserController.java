@@ -178,6 +178,7 @@ public class DataBrowserController implements Initializable {
                                     return;
 
                                 Thread t = new Thread(new FetchTableMetadataTask(db, schema, selectedItem));
+                                message.setText("Fetching metadata from the database for schema: " + schema);
                                 t.start();
                                 break;
 
@@ -216,6 +217,7 @@ public class DataBrowserController implements Initializable {
                                     listProperty = new SimpleListProperty<>();
                                     listProperty.set(checkBoxes);
                                     ListView<CheckBox> listView = new ListView<>();
+                                    listView.setStyle("-fx-background-insets: 0 ;");            // Remove Listview border.
                                     listView.itemsProperty().bind(listProperty);
                                     listView.prefHeightProperty().bind(columnsBox.heightProperty());
 
@@ -289,6 +291,7 @@ public class DataBrowserController implements Initializable {
     @FXML
     private void fetchData(ActionEvent event) {
         StringBuilder selectPart = new StringBuilder();
+        message.setText("");
 
         // Produces comma separated list of column names to be fetched.
         listProperty.forEach((checkBox -> {
@@ -381,6 +384,7 @@ public class DataBrowserController implements Initializable {
                 break;
 
             case "SQL Server":
+                user.setText(System.getProperty("user.name"));
                 password.setDisable(true);
                 service.setDisable(true);
                 sid.setDisable(true);
