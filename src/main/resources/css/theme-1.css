@@ -13,6 +13,7 @@
     -fx-dark-green: #005D57;
     -fx-green: #129622;
     -fx-blue: #5264AE;
+    -fx-light-blue: #1872c8;
     -fx-dark-blue: #2979FF;
     -fx-pure-black: #000000;
     -fx-google-blue: #065FD4;
@@ -39,14 +40,15 @@
     -fx-padding: 0.7em 0.57em;
     -fx-font-size: 12px;
     -fx-font-weight: normal;
-    -fx-background-color: -fx-light-gray;
+    -fx-background-color: white;
     -fx-text-fill: -fx-dark-black;
-    -fx-pref-width: 200;
-    -fx-pref-height: 200;
     -fx-font-smoothing-type: gray;
     -fx-border-radius: 10 10 0 0;
     -fx-effect:dropshadow(gaussian, #B4C1CC, 0.0, 0.0, 1.0, 1.0);
     -fx-content-display: bottom;
+    -fx-border-color: -fx-dark-white-gray;
+    -fx-border-width: 1px;
+    -fx-background-radius: 15.0;
 }
 
 .vbox {
@@ -111,7 +113,13 @@
 
 .hbox-level-1 {
     -fx-background-color: -fx-light-gray;
-    -fx-border-color: white;
+    -fx-border-color: -fx-light-white-gray;
+    -fx-border-width: 1px;
+}
+
+.hbox-level-bottom {
+    -fx-background-color: -fx-white;
+    -fx-border-color: -fx-light-white-gray;
     -fx-border-width: 1px;
 }
 
@@ -120,10 +128,6 @@
 }
 
 .error-message {
-/*
-    -fx-background-color: -fx-text-box-border, -fx-background ;
-    -fx-background-insets: 0, 0 0 1 0 ;
-    -fx-background-radius: 0 ;*/
     -fx-font-family: "consolas";
     -fx-font-size: 10pt;
     -fx-text-fill: -fx-dark-gray;
@@ -171,7 +175,7 @@
     -fx-background-insets: 0, 0 0 1 0 ;
     -fx-background-radius: 5;
     -fx-font-family: "consolas";
-    -fx-font-size: 15px;
+    -fx-font-size: 13px;
     -fx-background-color: white;
     -fx-text-fill: -fx-pure-black;
 }
@@ -331,14 +335,20 @@
 }
 
 /* Check Box Styling */
-.check-box .box {
-    -fx-background-color: white;
-    -fx-border-color:grey;
-    -fx-border-radius:3px;
+.check-box {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-gray;
 }
 
 .check-box: hover {
     -fx-text-fill: white;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color:grey;
+    -fx-border-radius:3px;
 }
 
 .check-box:selected .mark {
@@ -346,7 +356,7 @@
 }
 
 .check-box:selected .box {
-    -fx-background-color: #28a3f4;
+    -fx-background-color: -fx-light-blue;
 }
 
 .tree-table-style {
@@ -384,6 +394,7 @@
 }
 
 .table-view .column-header .label{
+   -fx-font-family:  "Segoe UI";
    -fx-text-fill: white;
    -fx-font-weight: bold;
    -fx-alignment: CENTER;

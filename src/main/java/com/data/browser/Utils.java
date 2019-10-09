@@ -37,7 +37,7 @@ public class Utils {
                 }
             }
             //set the new max-width with some extra space
-            column.setPrefWidth(max + 10.0d);
+            column.setPrefWidth(max + 20.0d);
         });
     }
 }

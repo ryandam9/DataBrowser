@@ -93,7 +93,7 @@
     <center>
         <SplitPane dividerPositions="0.27295492487479134" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>
-                <AnchorPane maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0">
+                <AnchorPane maxWidth="350.0" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0">
                     <children>
                         <TreeView fx:id="objectBrowser" layoutX="74.0" layoutY="182.0" prefHeight="616.0" prefWidth="321.6" styleClass="tree-table-style" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
@@ -102,7 +102,7 @@
                     <children>
                         <SplitPane dividerPositions="0.4211261051651931" prefHeight="743.2" prefWidth="861.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: #B4C1CC;">
+                                <AnchorPane fx:id="anchorPane1" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: white;">
                                     <children>
                                         <VBox fx:id="columnsBox" layoutX="80.0" layoutY="158.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="columns-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <padding>
@@ -111,7 +111,7 @@
                                         </VBox>
                                     </children>
                                 </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="742.0" prefWidth="245.0" style="-fx-background-color: #B4C1CC;">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="742.0" prefWidth="245.0">
                                     <children>
                                         <TableView fx:id="queryResult" layoutX="66.0" layoutY="87.0" prefHeight="614.4" prefWidth="495.2" style="-fx-background-color: #B4C1CC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
@@ -130,7 +130,7 @@
                     <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="270.0" spacing="10.0">
                             <children>
-                                <Label text="Records to fetch" />
+                                <Label styleClass="label-level-3" text="Records to fetch" />
                                 <TextField fx:id="recordsToFetch" styleClass="text-field" />
                             </children>
                             <padding>
@@ -139,13 +139,13 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="45.0" prefWidth="270.0" spacing="10.0">
                             <children>
-                                <Label text="Values to Ignore (Separated by Commas)" />
+                                <Label styleClass="label-level-3" text="Optional Predicate" />
                             </children>
                             <padding>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </padding>
                         </HBox>
-                        <TextArea fx:id="valuesToIgnore" prefHeight="200.0" prefWidth="200.0" styleClass="query-window">
+                        <TextArea fx:id="valuesToIgnore" prefHeight="200.0" prefWidth="200.0" promptText="Sample: COL1 IS NOT NULL AND COL2 &gt; 99" styleClass="query-window">
                             <VBox.margin>
                                 <Insets bottom="10.0" left="10.0" right="10.0" />
                             </VBox.margin>

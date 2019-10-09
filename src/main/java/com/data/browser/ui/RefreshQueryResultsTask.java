@@ -79,6 +79,8 @@ public class RefreshQueryResultsTask extends Task<Long> {
             Platform.runLater(() -> Utils.autoResizeColumns(resultsView));
         } catch (Exception e) {
             logStackTrace(e);
+            Platform.runLater(() -> statusMessage.setText(e.getMessage()));
+            throw e;
         }
 
         this.recordCount = recordCount;
@@ -95,5 +97,10 @@ public class RefreshQueryResultsTask extends Task<Long> {
     protected void done() {
         super.done();
         Platform.runLater(() -> progressIndicator.setVisible(false));
+    }
+
+    @Override
+    protected void failed() {
+        super.failed();
     }
 }

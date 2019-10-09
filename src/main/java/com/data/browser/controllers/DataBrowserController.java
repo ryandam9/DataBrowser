@@ -6,6 +6,7 @@ import com.data.browser.ui.TreeViewEntry;
 import com.dbutils.common.ColumnDetail;
 import com.dbutils.common.DBConnections;
 import com.dbutils.common.TableDetail;
+import com.dbutils.oracle.OracleMetadata;
 import com.dbutils.sqlserver.SqlServerMetadata;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
@@ -22,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -206,6 +208,7 @@ public class DataBrowserController implements Initializable {
                                     if (columns != null) {
                                         for (String c : cols) {
                                             CheckBox columnCheckBox = new CheckBox(c);
+                                            columnCheckBox.setMnemonicParsing(false);
                                             checkBoxes.add(columnCheckBox);
                                         }
                                     }
@@ -294,6 +297,11 @@ public class DataBrowserController implements Initializable {
                         .append(checkBox.getText());
         }));
 
+        if (selectPart.toString().length() == 0) {
+            message.setText("Select At least one column");
+            return;
+        }
+
         // Remove the first ","
         selectPart.deleteCharAt(0);
 
@@ -321,8 +329,17 @@ public class DataBrowserController implements Initializable {
             query = "SELECT  " + selectPart + " " + fromPart;
 
         // For Oracle
-        if (AppData.dbSelection.equals(AppData.ORACLE))
+        if (AppData.dbSelection.equals(AppData.ORACLE)) {
             query = query + " " + "WHERE ROWNUM < " + recordsToFetch.getText() + " ";
+
+            if (valuesToIgnore.getText().length() > 0)
+                query += " AND " + valuesToIgnore.getText();
+        }
+
+        if (AppData.dbSelection.equals(AppData.SQL_SERVER)) {
+            if (valuesToIgnore.getText().length() > 0)
+                query += " WHERE " + valuesToIgnore.getText();
+        }
 
         System.out.println(query);
 
@@ -452,6 +469,30 @@ public class DataBrowserController implements Initializable {
 
         switch (AppData.dbSelection) {
             case AppData.ORACLE:
+                // First get all Database names
+                try {
+                    databases = OracleMetadata.getAllDatabases(connection);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                // For each DB, fetch the Schemas.
+                for (String db : databases) {
+                    try {
+                        // Update application level dictionary for later use
+                        AppData.tables.put (db, new HashMap<>());
+
+                        schemas = OracleMetadata.getAllSchemas(connection, db);
+                        dbSchemas.put(db, schemas);
+
+                        // Update the application level dictionary with all the Schemas.
+                        for(String schema: schemas) {
+                            AppData.tables.get(db).put(schema, new HashMap<>());
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
                 break;
 
             case AppData.SQL_SERVER:
@@ -492,7 +533,7 @@ public class DataBrowserController implements Initializable {
             Collections.sort(sortedDBs);
 
             for (String db : sortedDBs) {
-                Node databaseIcon = new ImageView(new Image(new File("resources/images/" + "database.png").toURI().toURL().toString(), 16, 16, true, true));
+                Node databaseIcon = new ImageView(new Image(new File("resources/images/" + "database-green.png").toURI().toURL().toString(), 16, 16, true, true));
                 TreeViewEntry dbItem = new TreeViewEntry("database", AppData.host, db, databaseIcon);
                 dbItem.setExpanded(true);
 
@@ -529,6 +570,7 @@ public class DataBrowserController implements Initializable {
 
             switch (AppData.dbSelection) {
                 case AppData.ORACLE:
+                    tables = OracleMetadata.getAllTables(connection, db, schema);
                     break;
 
                 case AppData.SQL_SERVER:

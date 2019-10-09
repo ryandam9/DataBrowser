@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class Main extends Application {
         stage.setResizable(true);
         stage.setFullScreen(true);
         stage.setTitle("Data Browser");
+        stage.getIcons().add(new Image(new File("resources/images/database.png").toURI().toURL().toString()));
         stage.show();
     }
 
