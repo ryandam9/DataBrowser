@@ -1,5 +1,6 @@
 package com.data.browser.ui;
 
+import com.data.browser.AppData;
 import com.data.browser.Utils;
 import com.dbutils.common.DBConnections;
 import javafx.application.Platform;
@@ -12,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.util.Callback;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
@@ -23,15 +25,18 @@ public class RefreshQueryResultsTask extends Task<Long> {
     private final String query;
     private final ProgressIndicator progressIndicator;
     private final Label statusMessage;
+    private final Button fetchDataBtn;
     private Long recordCount = 0L;
 
     public RefreshQueryResultsTask(Connection connection, String query, TableView resultsView, ProgressIndicator progressIndicator,
-                                   Label statusMessage) {
+                                   Label statusMessage,
+                                   Button fetchDataBtn) {
         this.connection = connection;
         this.query = query;
         this.resultsView = resultsView;
         this.progressIndicator = progressIndicator;
         this.statusMessage = statusMessage;
+        this.fetchDataBtn = fetchDataBtn;
     }
 
     @Override
@@ -41,7 +46,9 @@ public class RefreshQueryResultsTask extends Task<Long> {
         Long recordCount = 0L;
 
         try {
-            resultSet = DBConnections.execReadOnlyQuery(connection, query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            AppData.sqlStatement = preparedStatement;
+            resultSet = DBConnections.execReadOnlyQuery(connection, preparedStatement);
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 
             // Setup Header
@@ -97,6 +104,7 @@ public class RefreshQueryResultsTask extends Task<Long> {
     protected void done() {
         super.done();
         Platform.runLater(() -> progressIndicator.setVisible(false));
+        Platform.runLater(() -> fetchDataBtn.setDisable(false));
     }
 
     @Override

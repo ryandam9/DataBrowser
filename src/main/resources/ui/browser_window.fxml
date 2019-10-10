@@ -86,7 +86,7 @@
     <center>
         <SplitPane dividerPositions="0.27295492487479134" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>
-                <AnchorPane maxWidth="350.0" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0">
+                <AnchorPane maxWidth="400.0" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0">
                     <children>
                         <TreeView fx:id="objectBrowser" layoutX="74.0" layoutY="182.0" prefHeight="616.0" prefWidth="321.6" styleClass="tree-table-style" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>

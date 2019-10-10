@@ -23,7 +23,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -31,7 +30,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.*;
 
 import static com.data.browser.AppLogger.logger;
@@ -125,6 +123,9 @@ public class DataBrowserController implements Initializable {
     private String querySchema;
     private String queryTable;
 
+    private Thread runningThread;
+    Task<Long> dataFetchingTask;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Set options to the Combo box
@@ -160,7 +161,7 @@ public class DataBrowserController implements Initializable {
                         TreeViewEntry<String> selectedItem = new_val;
 
                         String type = selectedItem.getType();
-                        String parentItem =  selectedItem.getParentItem();
+                        String parentItem = selectedItem.getParentItem();
 
                         switch (type) {
                             case "root":
@@ -187,52 +188,57 @@ public class DataBrowserController implements Initializable {
                                 schema = selectedItem.getParentItem();
                                 table = selectedItem.getValue();
 
-                                TableDetail searchEntry = new TableDetail(db, schema, table, "BASE TABLE");
-
-                                try {
-                                    List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
-                                    List<String> cols = new ArrayList<>();
-
-                                    columns.forEach(columnDetail -> {
-                                        cols.add(columnDetail.getColumn());
-                                    });
-
-                                    Collections.sort(cols, new Comparator<String>() {
-                                        @Override
-                                        public int compare(String o1, String o2) {
-                                            return o1.toLowerCase().compareTo(o2.toLowerCase());
-                                        }
-                                    });
-
-                                    ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
-
-                                    if (columns != null) {
-                                        for (String c : cols) {
-                                            CheckBox columnCheckBox = new CheckBox(c);
-                                            columnCheckBox.setMnemonicParsing(false);
-                                            checkBoxes.add(columnCheckBox);
-                                        }
-                                    }
-
-                                    listProperty = new SimpleListProperty<>();
-                                    listProperty.set(checkBoxes);
-                                    ListView<CheckBox> listView = new ListView<>();
-                                    listView.setStyle("-fx-background-insets: 0 ;");            // Remove Listview border.
-                                    listView.itemsProperty().bind(listProperty);
-                                    listView.prefHeightProperty().bind(columnsBox.heightProperty());
-
-                                    columnsBox.getChildren().clear();
-                                    columnsBox.getChildren().add(listView);
-
-                                    queryDB = db;
-                                    querySchema = schema;
-                                    queryTable = table;
-                                } catch (Exception ex) {
-                                }
+                                populateTableColumns(db, schema, table);
                                 break;
                         }
                     }
                 });
+    }
+
+    private void populateTableColumns(String db, String schema, String table) {
+        TableDetail searchEntry = new TableDetail(db, schema, table, "BASE TABLE");
+
+        try {
+            List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
+            List<String> cols = new ArrayList<>();
+
+            columns.forEach(columnDetail -> {
+                cols.add(columnDetail.getColumn());
+            });
+
+            Collections.sort(cols, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.toLowerCase().compareTo(o2.toLowerCase());
+                }
+            });
+
+            ObservableList<CheckBox> checkBoxes = FXCollections.observableArrayList();
+
+            if (columns != null) {
+                for (String c : cols) {
+                    CheckBox columnCheckBox = new CheckBox(c);
+                    columnCheckBox.setMnemonicParsing(false);
+                    checkBoxes.add(columnCheckBox);
+                }
+            }
+
+            listProperty = new SimpleListProperty<>();
+            listProperty.set(checkBoxes);
+            ListView<CheckBox> listView = new ListView<>();
+            listView.setStyle("-fx-background-insets: 0 ;");            // Remove Listview border.
+            listView.itemsProperty().bind(listProperty);
+            listView.prefHeightProperty().bind(columnsBox.heightProperty());
+
+            columnsBox.getChildren().clear();
+            columnsBox.getChildren().add(listView);
+
+            queryDB = db;
+            querySchema = schema;
+            queryTable = table;
+        } catch (Exception ex) {
+            message.setText("Unable to fetch Table Columns for: [" + db + "," + schema + "," + table + "];" + ex.getMessage());
+        }
     }
 
     @FXML
@@ -344,29 +350,45 @@ public class DataBrowserController implements Initializable {
                 query += " WHERE " + valuesToIgnore.getText();
         }
 
-        System.out.println(query);
+        logger.debug(query);
 
         progressIndicator.setVisible(true);
         message.setText("");
-
-        ResultSet resultSet;
-        ObservableList<ObservableList<String>> queryResultData = FXCollections.observableArrayList();
 
         // Clear existing query results
         if (queryResult.getColumns().size() > 0)
             queryResult.getColumns().clear();
 
         // Execute the Query in the Background
-        Task<Long> task = new RefreshQueryResultsTask(connection, query, queryResult, progressIndicator, message);
-        new Thread(task).start();
+        dataFetchingTask = new RefreshQueryResultsTask(connection, query, queryResult, progressIndicator, message, fetchDataBtn);
+        runningThread = new Thread(dataFetchingTask);
+        runningThread.start();
+
+        // When a Query is getting executed, Disable the "Fetch Data" button.
+        fetchDataBtn.setDisable(true);
     }
 
     @FXML
     private void cancelQuery(ActionEvent event) {
+        logger.debug("Going to Cancel the currently running SQL Query");
+        try {
+            AppData.sqlStatement.cancel();
+        } catch (Exception e) {
+            message.setText(e.getMessage());
+        }
+
+        // Once query is cancelled, enable the "Fetch Data" button.
+        fetchDataBtn.setDisable(false);
     }
 
     @FXML
     private void searchForTable(ActionEvent event) {
+        message.setText("");
+        String db = searchDB.getText();
+        String schema = searchSchema.getText();
+        String table = searchTable.getText();
+
+        populateTableColumns(db, schema, table);
     }
 
     @FXML
@@ -484,13 +506,13 @@ public class DataBrowserController implements Initializable {
                 for (String db : databases) {
                     try {
                         // Update application level dictionary for later use
-                        AppData.tables.put (db, new HashMap<>());
+                        AppData.tables.put(db, new HashMap<>());
 
                         schemas = OracleMetadata.getAllSchemas(connection, db);
                         dbSchemas.put(db, schemas);
 
                         // Update the application level dictionary with all the Schemas.
-                        for(String schema: schemas) {
+                        for (String schema : schemas) {
                             AppData.tables.get(db).put(schema, new HashMap<>());
                         }
                     } catch (Exception ex) {
@@ -511,13 +533,13 @@ public class DataBrowserController implements Initializable {
                 for (String db : databases) {
                     try {
                         // Update application level dictionary for later use
-                        AppData.tables.put (db, new HashMap<>());
+                        AppData.tables.put(db, new HashMap<>());
 
                         schemas = SqlServerMetadata.getAllSchemas(connection, db);
                         dbSchemas.put(db, schemas);
 
                         // Update the application level dictionary with all the Schemas.
-                        for(String schema: schemas) {
+                        for (String schema : schemas) {
                             AppData.tables.get(db).put(schema, new HashMap<>());
                         }
                     } catch (Exception ex) {
@@ -587,13 +609,13 @@ public class DataBrowserController implements Initializable {
             // To Sort table names
             List<TableDetail> unorderedTables = new ArrayList<>(tables.keySet());
             Collections.sort(unorderedTables, new Comparator<TableDetail>() {
-                                        @Override
-                                        public int compare(TableDetail o1, TableDetail o2) {
-                                            return o1.getTable().toLowerCase().compareTo(o2.getTable().toLowerCase());
-                                        }
-                                    });
+                @Override
+                public int compare(TableDetail o1, TableDetail o2) {
+                    return o1.getTable().toLowerCase().compareTo(o2.getTable().toLowerCase());
+                }
+            });
 
-            for(TableDetail tableDetail: unorderedTables) {
+            for (TableDetail tableDetail : unorderedTables) {
                 Node tableIcon = new ImageView(new Image(new File("resources/images/" + "table.png").toURI().toURL().toString(), 16, 16, true, true));
                 TreeViewEntry tableItem = new TreeViewEntry("table", schema, tableDetail.getTable(), tableIcon);
                 tablesInThisSchema.add(tableItem);
