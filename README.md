@@ -1,4 +1,4 @@
 # Data Browser
 
-![](./images/browser1.gif)
+![](./images/Data-browser.gif)
 
