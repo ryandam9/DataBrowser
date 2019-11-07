@@ -76,6 +76,7 @@ public class DataBrowserController implements Initializable {
 
     @FXML
     private VBox columnsBox;
+
     @FXML
     private TableView queryResult;
 
@@ -303,7 +304,9 @@ public class DataBrowserController implements Initializable {
         listProperty.forEach((checkBox -> {
             if (checkBox.isSelected())
                 selectPart.append(",")
-                        .append(checkBox.getText());
+                        .append("\"")                    // Put the column name in Double quotes
+                        .append(checkBox.getText())
+                        .append("\"");
         }));
 
         if (selectPart.toString().length() == 0) {
@@ -426,6 +429,14 @@ public class DataBrowserController implements Initializable {
         service.setText("");
         sid.setText("");
         port.setText("");
+    }
+
+    @FXML
+    private void clearResultsTable(ActionEvent event) {
+        // Clear existing query results
+//        if (queryResult.getColumns().size() > 0)
+            queryResult.getColumns().clear();
+            message.setText("");
     }
 
     /**

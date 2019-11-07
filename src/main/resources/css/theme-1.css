@@ -508,7 +508,7 @@
     -fx-background-color: -fx-table-cell-border-color, -fx-background;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-font-family: "monospace";
-    -fx-font-weight: bold;
+    -fx-font-weight: normal;
     -fx-font-size: 11pt;
 }
 

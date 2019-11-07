@@ -27,8 +27,12 @@ public class RefreshQueryResultsTask extends Task<Long> {
     private final Label statusMessage;
     private final Button fetchDataBtn;
     private Long recordCount = 0L;
+    ObservableList<ObservableList<String>> classResultsView;
 
-    public RefreshQueryResultsTask(Connection connection, String query, TableView resultsView, ProgressIndicator progressIndicator,
+    public RefreshQueryResultsTask(Connection connection,
+                                   String query,
+                                   TableView resultsView,
+                                   ProgressIndicator progressIndicator,
                                    Label statusMessage,
                                    Button fetchDataBtn) {
         this.connection = connection;
@@ -81,9 +85,12 @@ public class RefreshQueryResultsTask extends Task<Long> {
                 queryResultData.add(row);
             }
 
-            // Set Table View with data
-            Platform.runLater(() -> resultsView.setItems(queryResultData));
-            Platform.runLater(() -> Utils.autoResizeColumns(resultsView));
+            if (recordCount > 0) {
+                // Set Table View with data
+                classResultsView = queryResultData;
+                //Platform.runLater(() -> resultsView.setItems(queryResultData));
+                // Platform.runLater(() -> Utils.autoResizeColumns(resultsView));
+            }
         } catch (Exception e) {
             logStackTrace(e);
             Platform.runLater(() -> statusMessage.setText(e.getMessage()));
@@ -98,6 +105,9 @@ public class RefreshQueryResultsTask extends Task<Long> {
     public void succeeded() {
         super.succeeded();
         Platform.runLater(() -> statusMessage.setText("Records fetched from DB: " + this.recordCount));
+
+        if (recordCount > 0)
+            Platform.runLater(() -> resultsView.setItems(classResultsView));
     }
 
     @Override
