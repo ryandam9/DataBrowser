@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -78,7 +79,8 @@ public class DataBrowserController implements Initializable {
     private VBox columnsBox;
 
     @FXML
-    private TableView queryResult;
+    private AnchorPane tableViewAnchorPane;
+
 
     // UI Controls in the bottom horizontal box
     @FXML
@@ -115,6 +117,7 @@ public class DataBrowserController implements Initializable {
     @FXML
     private Button searchBtn;
 
+    private TableView queryResult;
     private ProgressIndicator progressIndicator;
     private Task<Connection> task;
     private static Connection connection;
@@ -204,7 +207,7 @@ public class DataBrowserController implements Initializable {
             List<String> cols = new ArrayList<>();
 
             columns.forEach(columnDetail -> {
-                cols.add(columnDetail.getColumn());
+                cols.add(columnDetail.getColumn() + " [" + columnDetail.getDataType() + "]");
             });
 
             Collections.sort(cols, new Comparator<String>() {
@@ -305,7 +308,7 @@ public class DataBrowserController implements Initializable {
             if (checkBox.isSelected())
                 selectPart.append(",")
                         .append("\"")                    // Put the column name in Double quotes
-                        .append(checkBox.getText())
+                        .append(checkBox.getText().split("\\[")[0].strip())
                         .append("\"");
         }));
 
@@ -358,12 +361,9 @@ public class DataBrowserController implements Initializable {
         progressIndicator.setVisible(true);
         message.setText("");
 
-        // Clear existing query results
-        if (queryResult.getColumns().size() > 0)
-            queryResult.getColumns().clear();
-
         // Execute the Query in the Background
-        dataFetchingTask = new RefreshQueryResultsTask(connection, query, queryResult, progressIndicator, message, fetchDataBtn);
+        clearResultsTable(new ActionEvent());
+        dataFetchingTask = new RefreshQueryResultsTask(connection, query, tableViewAnchorPane, progressIndicator, message, fetchDataBtn);
         runningThread = new Thread(dataFetchingTask);
         runningThread.start();
 
@@ -433,10 +433,10 @@ public class DataBrowserController implements Initializable {
 
     @FXML
     private void clearResultsTable(ActionEvent event) {
-        // Clear existing query results
-//        if (queryResult.getColumns().size() > 0)
-            queryResult.getColumns().clear();
-            message.setText("");
+        if (tableViewAnchorPane.getChildren().size() > 0)
+            tableViewAnchorPane.getChildren().remove(0);
+
+        message.setText("");
     }
 
     /**

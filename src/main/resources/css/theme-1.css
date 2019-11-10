@@ -347,6 +347,7 @@
 /* ListView styling */
 .list-cell:empty {
     visibility:hidden;
+    -fx-background-color: transparent;
 }
 
 .list-cell:even {
@@ -417,16 +418,21 @@
 
 .table-view .column-header,
 .table-view .column-header-background .filler {
-    -fx-background-color: -fx-dark-gray;
+    -fx-background-color: -fx-google-blue;
     -fx-border-color: white;
     -fx-border-width: 0 2 0 0;
 }
 
 .table-view .column-header .label{
-   -fx-font-family:  "Segoe UI";
+   -fx-font-family:  "Corpid C1 Regular";
    -fx-text-fill: white;
    -fx-font-weight: bold;
    -fx-alignment: CENTER;
+}
+
+.table-view > .column-header-background > .filler {
+    /* Region - area of header not taken by column headers */
+    -fx-background-color: white;
 }
 
 /*
@@ -497,13 +503,11 @@
 }
 */
 
-/* overwrite default row style */
 .table-row-cell {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
 }
 
-/* apply row style to cells instead */
 .table-row-cell .table-cell {
     -fx-background-color: -fx-table-cell-border-color, -fx-background;
     -fx-background-insets: 0, 0 0 1 0;
@@ -512,11 +516,10 @@
     -fx-font-size: 11pt;
 }
 
-.table-row-cell:odd {
+.table-row-cell:odd:filled {
     -fx-background: -fx-control-inner-background-alt;
 }
 
-/* fix markup for selected cells/cells in a selected row */
 .table-row-cell:filled > .table-cell:selected,
 .table-row-cell:filled:selected > .table-cell {
     -fx-background: -fx-selection-bar-non-focused;
@@ -527,6 +530,25 @@
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected {
     -fx-background: -fx-selection-bar;
 }
+
+.table-row-cell:empty:odd, .table-row-cell:empty:even {
+    -fx-background-color: white;
+}
+
+/*
+.table-row-cell .table-cell {
+	-fx-control-inner-background: lightblue ;
+	-fx-control-inner-background-alt: transparent ;
+	-fx-font-family: "monospace";
+    -fx-font-weight: normal;
+    -fx-font-size: 11pt;
+    -fx-text-fill: -fx-dark-gray;
+}
+
+.table-row-cell:empty {
+	-fx-background-color: white;
+}
+*/
 
 /* Scroll bar changes */
 .scroll-bar:horizontal .track,
