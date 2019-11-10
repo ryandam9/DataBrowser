@@ -418,16 +418,17 @@
 
 .table-view .column-header,
 .table-view .column-header-background .filler {
-    -fx-background-color: -fx-google-blue;
-    -fx-border-color: white;
+    -fx-background-color: white;
+    -fx-border-color: -fx-google-blue;
     -fx-border-width: 0 2 0 0;
 }
 
 .table-view .column-header .label{
    -fx-font-family:  "Corpid C1 Regular";
-   -fx-text-fill: white;
+   -fx-text-fill: -fx-google-blue;
    -fx-font-weight: bold;
    -fx-alignment: CENTER;
+   -fx-border-color: -fx-google-blue;
 }
 
 .table-view > .column-header-background > .filler {

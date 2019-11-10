@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -81,7 +80,6 @@ public class DataBrowserController implements Initializable {
     @FXML
     private AnchorPane tableViewAnchorPane;
 
-
     // UI Controls in the bottom horizontal box
     @FXML
     private TextField recordsToFetch;
@@ -117,7 +115,6 @@ public class DataBrowserController implements Initializable {
     @FXML
     private Button searchBtn;
 
-    private TableView queryResult;
     private ProgressIndicator progressIndicator;
     private Task<Connection> task;
     private static Connection connection;
@@ -199,6 +196,57 @@ public class DataBrowserController implements Initializable {
                 });
     }
 
+    /**
+     * This method is called when a Selection is made from the Combo Box. It stores the User selection in a application
+     * level Variable "AppData.dbSelection" which will be used later.
+     * @param event
+     */
+
+    @FXML
+    public void identifyUserSelection(ActionEvent event) {
+        resetFields();
+        String userSelection = databaseOptions.getSelectionModel().getSelectedItem().toString();
+        AppData.dbSelection = userSelection;
+
+        switch (userSelection) {
+            case "Oracle":
+                service.setDisable(false);
+                password.setDisable(false);
+                sid.setDisable(true);
+                port.setText("1521");
+                break;
+
+            case "SQL Server":
+                user.setText(System.getProperty("user.name"));
+                password.setDisable(true);
+                service.setDisable(true);
+                sid.setDisable(true);
+                port.setText("1433");
+                break;
+
+            default:
+                connectBtn.setDisable(true);
+                port.setText("");
+        }
+    }
+
+    private void resetFields() {
+        user.setText("");
+        password.setText("");
+        host.setText("");
+        service.setText("");
+        sid.setText("");
+        port.setText("");
+    }
+
+
+    /**
+     * This method gathers the Columns a table and populates a List View with Column names. In addition to column
+     * names, it also populates Column Data type.
+     * @param db - Database
+     * @param schema - Schema
+     * @param table - The table that's been clicked
+     */
     private void populateTableColumns(String db, String schema, String table) {
         TableDetail searchEntry = new TableDetail(db, schema, table, "BASE TABLE");
 
@@ -206,10 +254,12 @@ public class DataBrowserController implements Initializable {
             List<ColumnDetail> columns = AppData.tables.get(db).get(schema).get(searchEntry);
             List<String> cols = new ArrayList<>();
 
+            // Get Column name and Data type
             columns.forEach(columnDetail -> {
                 cols.add(columnDetail.getColumn() + " [" + columnDetail.getDataType() + "]");
             });
 
+            // To print the Columns in sorted order
             Collections.sort(cols, new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
@@ -222,11 +272,12 @@ public class DataBrowserController implements Initializable {
             if (columns != null) {
                 for (String c : cols) {
                     CheckBox columnCheckBox = new CheckBox(c);
-                    columnCheckBox.setMnemonicParsing(false);
+                    columnCheckBox.setMnemonicParsing(false);     // Without this, Columns with Underscores will have a problem.
                     checkBoxes.add(columnCheckBox);
                 }
             }
 
+            // Create a ListView with Column names as its contents
             listProperty = new SimpleListProperty<>();
             listProperty.set(checkBoxes);
             ListView<CheckBox> listView = new ListView<>();
@@ -245,10 +296,15 @@ public class DataBrowserController implements Initializable {
         }
     }
 
+    /**
+     * This method is called when the "CONNECT" button is clicked. It validates the DB Credentials and tries to acquire a
+     * Database connection. It executes a Background Task to acquire the connection.
+     *
+     * @param event
+     */
     @FXML
     private void acquireDBConnection(ActionEvent event) {
-        // Clear any existing message
-        message.setText("");
+        message.setText("");        // Clear any existing message
 
         if (user.getText() == null || user.getText().length() == 0) {
             message.setText("User ID cannot be null !");
@@ -284,6 +340,10 @@ public class DataBrowserController implements Initializable {
         new Thread(task).start();
     }
 
+    /**
+     * Select all the Columns in the ListView
+     * @param event
+     */
     @FXML
     private void selectAllColumns(ActionEvent event) {
         listProperty.forEach((checkBox -> {
@@ -291,6 +351,10 @@ public class DataBrowserController implements Initializable {
         }));
     }
 
+    /**
+     * Deselect all the Columns in the ListView
+     * @param event
+     */
     @FXML
     private void deselectAllColumns(ActionEvent event) {
         listProperty.forEach((checkBox -> {
@@ -298,6 +362,11 @@ public class DataBrowserController implements Initializable {
         }));
     }
 
+    /**
+     * Prepares a SQL Query and executes it in the Background. Its the task's role to execute the query, and refresh
+     * the UI with the results.
+     * @param event
+     */
     @FXML
     private void fetchData(ActionEvent event) {
         StringBuilder selectPart = new StringBuilder();
@@ -361,9 +430,9 @@ public class DataBrowserController implements Initializable {
         progressIndicator.setVisible(true);
         message.setText("");
 
-        // Execute the Query in the Background
-        clearResultsTable(new ActionEvent());
-        dataFetchingTask = new RefreshQueryResultsTask(connection, query, tableViewAnchorPane, progressIndicator, message, fetchDataBtn);
+        clearResultsTable(new ActionEvent());         // Remove the TableView
+        dataFetchingTask = new RefreshQueryResultsTask(connection, query, tableViewAnchorPane, progressIndicator,
+                message, fetchDataBtn);
         runningThread = new Thread(dataFetchingTask);
         runningThread.start();
 
@@ -394,42 +463,7 @@ public class DataBrowserController implements Initializable {
         populateTableColumns(db, schema, table);
     }
 
-    @FXML
-    public void identifyUserSelection(ActionEvent event) {
-        resetFields();
-        String userSelection = databaseOptions.getSelectionModel().getSelectedItem().toString();
-        AppData.dbSelection = userSelection;
 
-        switch (userSelection) {
-            case "Oracle":
-                service.setDisable(false);
-                password.setDisable(false);
-                sid.setDisable(true);
-                port.setText("1521");
-                break;
-
-            case "SQL Server":
-                user.setText(System.getProperty("user.name"));
-                password.setDisable(true);
-                service.setDisable(true);
-                sid.setDisable(true);
-                port.setText("1433");
-                break;
-
-            default:
-                connectBtn.setDisable(true);
-                port.setText("");
-        }
-    }
-
-    private void resetFields() {
-        user.setText("");
-        password.setText("");
-        host.setText("");
-        service.setText("");
-        sid.setText("");
-        port.setText("");
-    }
 
     @FXML
     private void clearResultsTable(ActionEvent event) {

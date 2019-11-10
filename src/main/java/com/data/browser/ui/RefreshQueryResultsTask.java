@@ -18,12 +18,11 @@ import javafx.util.Callback;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 
 import static com.data.browser.Utils.logStackTrace;
 
 /**
- * It is a JavaFX Background task to execute a Query and refresh the TableView with the results.
+ * This is a JavaFX Background task to execute a Query and refresh the TableView with the results.
  */
 public class RefreshQueryResultsTask extends Task<Long> {
     private final Connection connection;
@@ -58,7 +57,7 @@ public class RefreshQueryResultsTask extends Task<Long> {
 
     @Override
     protected Long call() throws Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         ObservableList<ObservableList<Object>> queryResultData = FXCollections.observableArrayList();
         Long recordCount = 0L;
 
@@ -66,13 +65,12 @@ public class RefreshQueryResultsTask extends Task<Long> {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             AppData.sqlStatement = preparedStatement;
             resultSet = DBConnections.execReadOnlyQuery(connection, preparedStatement);
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 
-            // Setup Header
+            // Setup Header for the Table View
             for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
                 final int j = i;
                 TableColumn col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1).toUpperCase());
-//                col.setPrefWidth(Control.USE_COMPUTED_SIZE);
+//                col.setPrefWidth(Control.USE_PREF_SIZE);
 
                 col.setCellValueFactory(
                         new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
@@ -117,10 +115,8 @@ public class RefreshQueryResultsTask extends Task<Long> {
         Platform.runLater(() -> statusMessage.setText("Records fetched from DB: " + this.recordCount));
 
         if (recordCount > 0) {
-            // Set Table View with data
-            Platform.runLater(() -> {
-                tableViewAnchorPane.getChildren().add(tableView);
-            });
+            // Attach the Table View to the Anchor Pane
+            Platform.runLater(() -> tableViewAnchorPane.getChildren().add(tableView));
         }
     }
 
@@ -136,6 +132,9 @@ public class RefreshQueryResultsTask extends Task<Long> {
         super.failed();
     }
 
+    /**
+     * This method Creates a Table view and specifies its position on an Anchor Pane
+     */
     private void createTableView() {
         tableView = new TableView();
         AnchorPane.setTopAnchor(tableView, 5.0);
@@ -144,21 +143,27 @@ public class RefreshQueryResultsTask extends Task<Long> {
         AnchorPane.setLeftAnchor(tableView, 5.0);
         tableView.setStyle("-fx-background-insets: 0 ;");
 
+        // Multiple rows can be selected in the Table view
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        // Individual Cells can be selected; Otherwise, it would be records.
         tableView.getSelectionModel().setCellSelectionEnabled(true);
 
         ObservableList<TablePosition> selectedCells = tableView.getSelectionModel().getSelectedCells();
 
+        // When cells in the TableView are selected, This part is going to collect the Data from the cells
+        // separated by commas and store it in the System's Clip board.
         selectedCells.addListener((ListChangeListener.Change<? extends TablePosition> change) -> {
             StringBuilder selectedCellsData = new StringBuilder();
             Object object;
 
             if (selectedCells.size() > 0) {
-                for (int i = 0; i < selectedCells.size(); i++) {
-                    TablePosition selectedCell = selectedCells.get(i);
+                for (TablePosition selectedCell : selectedCells) {
                     TableColumn column = selectedCell.getTableColumn();
                     int rowIndex = selectedCell.getRow();
 
+                    // This check makes sure that we are okay even if Cell has no data. otherwise, we will have a
+                    // Null Pointer Exception !
                     if (column.getCellObservableValue(rowIndex) != null) {
                         object = column.getCellObservableValue(rowIndex).getValue();
                         selectedCellsData
