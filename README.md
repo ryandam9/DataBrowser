@@ -1,5 +1,5 @@
 # Data Browser
 
-![](./images/screen-shot)
+![](./images/screen-shot.gif)
 
 ****
