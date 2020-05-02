@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
     <Properties>
-        <Property name="basePath">C:\Users\ryand\Desktop\logs</Property>
+        <Property name="basePath">C:\Users\ravis\Desktop\logs</Property>
     </Properties>
 
     <Appenders>

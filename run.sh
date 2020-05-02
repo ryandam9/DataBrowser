@@ -14,13 +14,19 @@ cp -r src/main/resources ~/Desktop/test_run/
 
 # Using the "Maven maven-dependency-plugin", all the required dependencies are copied to
 # "target/lib" directory. All these are required during run time. As the run time class path is mentioned
-# as "./resources/lib/" in the pom.xml file, the "lib" folder is execpted to be present in "Run time folder/resources".
+# as "./resources/lib/" in the pom.xml file, the "lib" folder is expected to be present in "Run time folder/resources".
 # This copy step copies the Project runtime dependencies to resources folder.
 cp -r ./target/lib ~/Desktop/test_run/resources/
 
 # This project also needs the resources required to execute "DBUtils" module.
-cp -r /c/Users/ryand/Desktop/dbutils/src/main/resources/* ~/Desktop/test_run/resources/
+cp -r /c/Users/ravis/Desktop/projects/dbutils/src/main/resources/* ~/Desktop/test_run/resources/
 
 cd ~/Desktop/test_run/
-export LOG4J_CONFIGURATION_FILE="C:\Users\ryand\Desktop\test_run\resources\log4j2-browser.xml"
+export LOG4J_CONFIGURATION_FILE="C:\Users\ravis\Desktop\test_run\resources\log4j2-browser.xml"
+
+# Set Paths
+export JAVA_HOME="/c/Users/ravis/Desktop/software/jdk-14"
+export PATH="/c/Users/ravis/Desktop/software/jdk-14/bin":$PATH
+export PATH_TO_FX="/c/Users/ravis/Desktop/software/javafx-sdk-14/lib"
+
 java --module-path $PATH_TO_FX --add-modules javafx.controls --add-modules javafx.fxml -jar ./DataBrowser-1.0.jar
