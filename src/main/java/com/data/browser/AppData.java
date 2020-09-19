@@ -15,6 +15,7 @@ public class AppData {
     public static String host;
     public static String service;
     public static String port;
+    public static String tnsEntry;
     public static Map<String, Map<String, Map<TableDetail, List<ColumnDetail>>>> tables = new HashMap<>();
     public static Map<String, List<String>> schemas;
     public static PreparedStatement sqlStatement;

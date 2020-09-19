@@ -14,6 +14,7 @@ public class DBConnectionTask implements Callable<Connection> {
     String service;
     String port;
     String dbType;
+    String tnsEntry;
 
     public DBConnectionTask(String user, String host, String port, String dbType) {
         this.user = user;
@@ -22,13 +23,14 @@ public class DBConnectionTask implements Callable<Connection> {
         this.dbType = dbType;
     }
 
-    public DBConnectionTask(String user, String password, String host, String service, String port, String dbType) {
+    public DBConnectionTask(String user, String password, String host, String service, String port, String dbType, String tnsEntry) {
         this.user = user;
         this.password = password;
         this.host = host;
         this.service = service;
         this.port = port;
         this.dbType = dbType;
+        this.tnsEntry = tnsEntry;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class DBConnectionTask implements Callable<Connection> {
 
         if (dbType.equals("Oracle")) {
             try {
-                connection = DBConnections.getOracleConnection(user, password, host, service, port);
+                connection = DBConnections.getOracleConnection(user, password, host, service, port, tnsEntry);
                 return connection;
             } catch (Exception ex) {
                 logStackTrace(ex);

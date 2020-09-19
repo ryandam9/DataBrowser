@@ -16,99 +16,118 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1200.0" stylesheets="@../css/theme-1.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.data.browser.controllers.DataBrowserController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="900.0" prefWidth="1200.0"
+            stylesheets="@../css/theme-1.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.data.browser.controllers.DataBrowserController">
     <top>
-        <HBox prefHeight="120.0" prefWidth="1190.0" spacing="10.0" styleClass="hbox-level-1" BorderPane.alignment="CENTER">
+        <HBox prefHeight="120.0" prefWidth="1190.0" spacing="10.0" styleClass="hbox-level-1"
+              BorderPane.alignment="CENTER">
             <children>
                 <VBox prefHeight="110.0" prefWidth="182.0" spacing="10.0">
                     <children>
                         <Label styleClass="label-level-3" text="Select Database">
                             <font>
-                                <Font name="System Bold" size="12.0" />
+                                <Font name="System Bold" size="12.0"/>
                             </font>
                         </Label>
-                        <ComboBox fx:id="databaseOptions" onAction="#identifyUserSelection" prefWidth="150.0" promptText="Database" visibleRowCount="5" />
+                        <ComboBox fx:id="databaseOptions" onAction="#identifyUserSelection" prefWidth="150.0"
+                                  promptText="Database" visibleRowCount="5"/>
                     </children>
                     <HBox.margin>
-                        <Insets />
+                        <Insets/>
                     </HBox.margin>
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </padding>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="148.0" prefWidth="0.0" />
+                <Separator orientation="VERTICAL" prefHeight="148.0" prefWidth="0.0"/>
                 <VBox layoutX="10.0" layoutY="10.0" prefHeight="120.0" prefWidth="262.0" spacing="5.0">
                     <padding>
-                        <Insets left="10.0" right="10.0" top="10.0" />
+                        <Insets left="10.0" right="10.0" top="10.0"/>
                     </padding>
                     <children>
-                        <TextField fx:id="user" promptText="User ID" />
-                        <TextField fx:id="password" layoutX="20.0" layoutY="20.0" promptText="Password" />
-                        <TextField fx:id="host" layoutX="20.0" layoutY="56.0" promptText="Host/Server Instance" />
+                        <TextField fx:id="user" promptText="User ID"/>
+                        <TextField fx:id="password" layoutX="20.0" layoutY="20.0" promptText="Password"/>
+                        <TextField fx:id="host" layoutX="20.0" layoutY="56.0" promptText="Host/Server Instance"/>
                     </children>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
                 <VBox layoutX="220.0" layoutY="10.0" prefHeight="120.0" prefWidth="262.0" spacing="5.0">
                     <padding>
-                        <Insets left="10.0" right="10.0" top="10.0" />
+                        <Insets left="10.0" right="10.0" top="10.0"/>
                     </padding>
                     <children>
-                        <TextField fx:id="service" promptText="Service (For Oracle)" />
-                        <TextField fx:id="sid" layoutX="20.0" layoutY="20.0" promptText="SID (For Oracle)" />
-                        <TextField fx:id="port" layoutX="20.0" layoutY="56.0" promptText="Port" />
+                        <TextField fx:id="service" promptText="Service (For Oracle)"/>
+                        <TextField fx:id="sid" layoutX="20.0" layoutY="20.0" promptText="SID (For Oracle)"/>
+                        <TextField fx:id="port" layoutX="20.0" layoutY="56.0" promptText="Port"/>
                     </children>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
-                <VBox fx:id="progressBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="10.0" prefHeight="120.0" prefWidth="137.0" spacing="10.0">
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
+                <VBox fx:id="progressBox" alignment="TOP_CENTER" layoutX="509.0" layoutY="10.0" prefHeight="120.0"
+                      prefWidth="137.0" spacing="10.0">
                     <padding>
-                        <Insets left="10.0" right="10.0" top="10.0" />
+                        <Insets left="10.0" right="10.0" top="10.0"/>
                     </padding>
                     <children>
-                        <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#acquireDBConnection" styleClass="click-button" text="CONNECT" />
+                        <TextField fx:id="tnsEntry" promptText="TNS Entry"/>
+                        <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#acquireDBConnection"
+                                styleClass="click-button" text="CONNECT"/>
                     </children>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
                 <HBox HBox.hgrow="NEVER">
                     <HBox.margin>
-                        <Insets />
+                        <Insets/>
                     </HBox.margin>
                     <children>
-                        <Label fx:id="message" alignment="TOP_LEFT" maxWidth="800.0" prefHeight="120.0" prefWidth="800.0" styleClass="error-message" wrapText="true" />
+                        <Label fx:id="message" alignment="TOP_LEFT" maxWidth="800.0" prefHeight="120.0"
+                               prefWidth="800.0" styleClass="error-message" wrapText="true"/>
                     </children>
                     <padding>
-                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" right="10.0" top="10.0"/>
                     </padding>
                 </HBox>
             </children>
         </HBox>
     </top>
     <center>
-        <SplitPane dividerPositions="0.27295492487479134" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.27295492487479134" prefHeight="160.0" prefWidth="200.0"
+                   BorderPane.alignment="CENTER">
             <items>
                 <AnchorPane maxWidth="400.0" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0">
                     <children>
-                        <TreeView fx:id="objectBrowser" layoutX="74.0" layoutY="182.0" prefHeight="616.0" prefWidth="321.6" styleClass="tree-table-style" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TreeView fx:id="objectBrowser" layoutX="74.0" layoutY="182.0" prefHeight="616.0"
+                                  prefWidth="321.6" styleClass="tree-table-style" AnchorPane.bottomAnchor="0.0"
+                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                     </children>
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <SplitPane dividerPositions="0.4211261051651931" prefHeight="743.2" prefWidth="861.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.4211261051651931" prefHeight="743.2" prefWidth="861.6"
+                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane fx:id="anchorPane1" maxWidth="350.0" minHeight="0.0" minWidth="-Infinity" prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: white;">
+                                <AnchorPane fx:id="anchorPane1" maxWidth="350.0" minHeight="0.0" minWidth="-Infinity"
+                                            prefHeight="160.0" prefWidth="300.0" style="-fx-background-color: white;">
                                     <children>
-                                        <VBox fx:id="columnsBox" layoutX="80.0" layoutY="158.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="columns-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <VBox fx:id="columnsBox" layoutX="80.0" layoutY="158.0"
+                                              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                              styleClass="columns-box" AnchorPane.bottomAnchor="0.0"
+                                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                              AnchorPane.topAnchor="0.0">
                                             <padding>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                             </padding>
                                         </VBox>
                                     </children>
                                     <padding>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </AnchorPane>
-                                <AnchorPane fx:id="tableViewAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="742.0" prefWidth="245.0">
+                                <AnchorPane fx:id="tableViewAnchorPane" minHeight="0.0" minWidth="0.0"
+                                            prefHeight="742.0" prefWidth="245.0">
                                     <padding>
-                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </AnchorPane>
                             </items>
@@ -119,80 +138,91 @@
         </SplitPane>
     </center>
     <bottom>
-        <HBox prefHeight="140.0" prefWidth="1190.0" spacing="10.0" styleClass="hbox-level-1" BorderPane.alignment="CENTER">
+        <HBox prefHeight="140.0" prefWidth="1190.0" spacing="10.0" styleClass="hbox-level-1"
+              BorderPane.alignment="CENTER">
             <children>
                 <VBox prefHeight="140.0" prefWidth="270.0">
                     <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="270.0" spacing="10.0">
                             <children>
-                                <Label styleClass="label-level-3" text="Records to fetch" />
-                                <TextField fx:id="recordsToFetch" styleClass="text-field" />
+                                <Label styleClass="label-level-3" text="Records to fetch"/>
+                                <TextField fx:id="recordsToFetch" styleClass="text-field"/>
                             </children>
                             <padding>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </padding>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="45.0" prefWidth="270.0" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="45.0" prefWidth="270.0"
+                              spacing="10.0">
                             <children>
-                                <Label styleClass="label-level-3" text="Optional Predicate" />
+                                <Label styleClass="label-level-3" text="Optional Predicate"/>
                             </children>
                             <padding>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </padding>
                         </HBox>
-                        <TextArea fx:id="valuesToIgnore" prefHeight="200.0" prefWidth="200.0" promptText="Sample: COL1 IS NOT NULL AND COL2 &gt; 99" styleClass="query-window">
+                        <TextArea fx:id="valuesToIgnore" prefHeight="200.0" prefWidth="200.0"
+                                  promptText="Sample: COL1 IS NOT NULL AND COL2 &gt; 99" styleClass="query-window">
                             <VBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" />
+                                <Insets bottom="10.0" left="10.0" right="10.0"/>
                             </VBox.margin>
                         </TextArea>
                     </children>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
                 <VBox layoutX="10.0" layoutY="10.0" prefHeight="193.0" prefWidth="198.0">
                     <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="270.0" spacing="10.0">
                             <padding>
-                                <Insets bottom="10.0" right="10.0" top="10.0" />
+                                <Insets bottom="10.0" right="10.0" top="10.0"/>
                             </padding>
                             <children>
-                                <CheckBox fx:id="isUniqueValuesChecked" mnemonicParsing="false" text="Select DISTINCT Values" />
+                                <CheckBox fx:id="isUniqueValuesChecked" mnemonicParsing="false"
+                                          text="Select DISTINCT Values"/>
                             </children>
                         </HBox>
-                        <Button mnemonicParsing="false" onAction="#clearResultsTable" styleClass="click-button" text="Clear Results" />
+                        <Button mnemonicParsing="false" onAction="#clearResultsTable" styleClass="click-button"
+                                text="Clear Results"/>
                     </children>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
                 <VBox layoutX="280.0" layoutY="10.0" prefHeight="193.0" prefWidth="157.0" spacing="10.0">
                     <children>
-                        <Button fx:id="selectAllBtn" mnemonicParsing="false" onAction="#selectAllColumns" styleClass="click-button" text="Select All Columns" />
-                        <Button fx:id="resetBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#deselectAllColumns" styleClass="click-button" text="Reset" />
-                        <Button fx:id="fetchDataBtn" layoutX="10.0" layoutY="36.0" mnemonicParsing="false" onAction="#fetchData" styleClass="click-button" text="Fetch Data" />
-                        <Button fx:id="cancelQueryBtn" layoutX="10.0" layoutY="61.0" mnemonicParsing="false" onAction="#cancelQuery" styleClass="click-button" text="Cancel Query" />
+                        <Button fx:id="selectAllBtn" mnemonicParsing="false" onAction="#selectAllColumns"
+                                styleClass="click-button" text="Select All Columns"/>
+                        <Button fx:id="resetBtn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
+                                onAction="#deselectAllColumns" styleClass="click-button" text="Reset"/>
+                        <Button fx:id="fetchDataBtn" layoutX="10.0" layoutY="36.0" mnemonicParsing="false"
+                                onAction="#fetchData" styleClass="click-button" text="Fetch Data"/>
+                        <Button fx:id="cancelQueryBtn" layoutX="10.0" layoutY="61.0" mnemonicParsing="false"
+                                onAction="#cancelQuery" styleClass="click-button" text="Cancel Query"/>
                     </children>
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </padding>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
-                <VBox alignment="TOP_RIGHT" layoutX="551.0" layoutY="10.0" prefHeight="140.0" prefWidth="270.0" spacing="10.0">
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
+                <VBox alignment="TOP_RIGHT" layoutX="551.0" layoutY="10.0" prefHeight="140.0" prefWidth="270.0"
+                      spacing="10.0">
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </padding>
                     <children>
-                        <TextField fx:id="searchDB" promptText="Database" />
-                        <TextField fx:id="searchSchema" layoutX="20.0" layoutY="20.0" promptText="Schema" />
-                        <TextField fx:id="searchTable" layoutX="20.0" layoutY="61.0" promptText="Table" />
-                        <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchForTable" styleClass="click-button" text="Fetch Columns" />
+                        <TextField fx:id="searchDB" promptText="Database"/>
+                        <TextField fx:id="searchSchema" layoutX="20.0" layoutY="20.0" promptText="Schema"/>
+                        <TextField fx:id="searchTable" layoutX="20.0" layoutY="61.0" promptText="Table"/>
+                        <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchForTable"
+                                styleClass="click-button" text="Fetch Columns"/>
                     </children>
                 </VBox>
-                <Separator orientation="VERTICAL" prefHeight="200.0" />
+                <Separator orientation="VERTICAL" prefHeight="200.0"/>
             </children>
             <BorderPane.margin>
-                <Insets top="5.0" />
+                <Insets top="5.0"/>
             </BorderPane.margin>
         </HBox>
     </bottom>
     <padding>
-        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
 </BorderPane>

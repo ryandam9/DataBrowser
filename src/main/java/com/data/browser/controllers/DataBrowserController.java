@@ -38,7 +38,7 @@ import static com.data.browser.Utils.logStackTrace;
 public class DataBrowserController implements Initializable {
     // Controls in top horizontal Box
     @FXML
-    private ComboBox databaseOptions;
+    private ComboBox<String> databaseOptions;
 
     @FXML
     private TextField user;
@@ -66,6 +66,9 @@ public class DataBrowserController implements Initializable {
 
     @FXML
     private Label message;
+
+    @FXML
+    public TextField tnsEntry;
 
     // UI Controls to produce result
     @FXML
@@ -311,20 +314,21 @@ public class DataBrowserController implements Initializable {
             return;
         }
 
-        if (host.getText() == null || host.getText().length() == 0) {
-            message.setText("Host/Server Instance cannot be null !");
-            return;
-        }
+//        if (host.getText() == null || host.getText().length() == 0) {
+//            message.setText("Host/Server Instance cannot be null !");
+//            return;
+//        }
 
         if (AppData.dbSelection.equals("Oracle")) {
-            if (password.getText() == null || password.getText().length() == 0) {
-                message.setText("Password cannot be null !");
-                return;
-            }
+//            if (password.getText() == null || password.getText().length() == 0) {
+//                message.setText("Password cannot be null !");
+//                return;
+//            }
 
             if ((service.getText() == null || service.getText().length() == 0) &&
-                    (sid.getText() == null || sid.getText().length() == 0)) {
-                message.setText("For Oracle, either Service or SID needs to be specified");
+                    (sid.getText() == null || sid.getText().length() == 0) &&
+                    (tnsEntry.getText() == null || tnsEntry.getText().length() == 0)) {
+                message.setText("For Oracle, any of Service/SID/TnsEntry needs to be specified");
                 return;
             }
         }
@@ -334,6 +338,7 @@ public class DataBrowserController implements Initializable {
         AppData.host = host.getText();
         AppData.service = service.getText();
         AppData.port = port.getText();
+        AppData.tnsEntry = tnsEntry.getText();
 
         task = new DBConnectionTask();
         logger.debug("Background thread is getting executed to obtain a DB Connection.");
@@ -487,7 +492,7 @@ public class DataBrowserController implements Initializable {
             try {
                 switch (AppData.dbSelection) {
                     case AppData.ORACLE:
-                        conn = DBConnections.getOracleConnection(AppData.user, AppData.password, AppData.host, AppData.service, AppData.port);
+                        conn = DBConnections.getOracleConnection(AppData.user, AppData.password, AppData.host, AppData.service, AppData.port, AppData.tnsEntry);
                         break;
 
                     case AppData.SQL_SERVER:
